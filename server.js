@@ -11,7 +11,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // PostgreSQL 연결 설정
 const pool = new Pool({
-  connectionString: '여기에 Render에서 받은 연결 문자열을 넣어줘',
+  connectionString: process.env.DATABASE_URL,
 });
 
 // sites 배열 초기화
