@@ -46,6 +46,7 @@ loadSites();
 
 app.post('/submit', async (req, res) => {
   const { name, url } = req.body;
+  console.log(`Received data: ${name}, ${url}`); // 요청 데이터 로그
   await saveSites(name, url);
   res.send('Data received and stored');
 });
