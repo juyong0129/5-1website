@@ -1,0 +1,44 @@
+body {
+    background-color: beige;
+    font-family: "Jua", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+      
+}
+header {
+    background-color: chocolate;
+    display: flex;
+    align-items: center;
+}
+
+#logo {
+    margin-right: 20px; /* 필요에 따라 간격 조정 */
+}
+
+nav {
+    flex-grow: 1;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+nav ul li {
+    margin-right: 20px; /* 필요에 따라 간격 조정 */
+}
+
+nav ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    background-color: rgb(214, 167, 134);
+}

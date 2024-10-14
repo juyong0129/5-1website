@@ -1,0 +1,16 @@
+{
+  "name": "5-1website",
+  "version": "1.0.0",
+  "description": "5학년 1반 웹사이트",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Juyong",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "pg": "^8.13.0"
+  }
+}

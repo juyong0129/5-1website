@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>5-1 website!</title>
+</head>
+<body>
+    <script src="script.js"></script>
+    <div id="container">
+        <header>
+            <div id="logo">
+                    <a href="index.html"><img src="image/5학년 1반 로고.png" alt="logo" width="45"></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#padlet">padlet</a></li>
+                    <li><a href="#classroom">알림장</a></li>
+                    <li><a href="#friend">수업시간에 사용하는 사이트</a></li>
+                    <li><a href="#">친구들이 좋아하는 사이트</a></li>
+                    <li><a href="#">시간표</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div id="slideShow"></div>
+        <div class="contents">
+           <div id="main">
+                <section id="padlet">
+                    <h1><a href="https://padlet.com/dongbuk18/5-1-ml7gaka49amkzcoj" target="_blank">padlet 바로가기</a></h1>
+                    <h1><img src="image/padlet.png" alt="padlet이미지" width="50%"></h1>
+                </section>
+                <section id="classroom">
+                    <h1><a target="_blank" href="https://classroom.google.com/c/NjY0MDgyODI5MDcy">classroom 바로가기</a></h1>
+                    <h1><img src="image/classroom.png" alt="classroom이미지" width="50%"></h1>
+                </section>
+                <section id="friend">
+                    <h1>설문조사</h1>
+                    <form id="siteForm">
+                        <label for="question1">좋아하는 사이트 이름을 적어주세요!:</label>
+                        <input type="text" id="question1" name="question1" required><br><br>
+                
+                        <label for="question2">좋아하는 사이트 주소를 적어주세요!:</label>
+                        <input type="url" id="question2" name="question2" required><br><br>
+                
+                        <input type="submit" value="제출">
+                    </form>
+                    <div id="output"></div>
+                </section>
+            </div>
+        </div>
+        <footer></footer>
+    </div>
+</body>
+</html>
