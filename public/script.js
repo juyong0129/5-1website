@@ -1,7 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('siteForm');
     const output = document.getElementById('output');
-
+    const addSiteButton = document.getElementById('addSiteButton');
+    const popup = document.getElementById('popup');
+    const closePopup = document.getElementById('closePopup');
+    const popupForm = document.getElementById('popupForm');
+    const teacherSites = document.getElementById('teacherSites');
+    
     form.addEventListener('submit', function(event) {
         event.preventDefault(); // 폼의 기본 제출 동작을 막습니다.
         
@@ -45,4 +50,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 페이지 로드 시 저장된 데이터를 출력
     displayStoredData();
+
+    addSiteButton.addEventListener('click', function() {
+        popup.style.display = 'block';
+    });
+
+    closePopup.addEventListener('click', function() {
+        popup.style.display = 'none';
+    });
+
+    popupForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const siteName = document.getElementById('siteName').value;
+        const siteUrl = document.getElementById('siteUrl').value;
+        fetch('/submitTeacherSite', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: siteName, url: siteUrl })
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data);
+            displayTeacherSites();
+        });
+        popup.style.display = 'none';
+        popupForm.reset();
+    });
+
+    function displayTeacherSites() {
+        fetch('/teacherSites')
+        .then(response => response.json())
+        .then(sites => {
+            teacherSites.innerHTML = '';
+            sites.forEach(site => {
+                teacherSites.innerHTML += `<li>${site.name} - <a href="${site.url}" target="_blank">${site.url}</a></li>`;
+            });
+        });
+    }
+
+    displayTeacherSites();
 });

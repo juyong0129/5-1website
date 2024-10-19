@@ -42,3 +42,15 @@ nav ul li a {
 nav ul li a:hover {
     background-color: rgb(214, 167, 134);
 }
+
+.popup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: beige;
+    border: 1px solid black;
+    padding: 20px;
+    z-index: 1000;
+}
