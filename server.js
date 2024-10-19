@@ -28,6 +28,17 @@ async function loadSites() {
   }
 }
 
+// PostgreSQL에서 teacherSites를 로드하는 함수
+async function loadTeacherSites() {
+  try {
+    const res = await pool.query('SELECT * FROM teacher_sites');
+    teacherSites = res.rows;
+  } catch (err) {
+    console.log(err);
+    teacherSites = [];
+  }
+}
+
 // PostgreSQL에 sites를 저장하는 함수
 async function saveSites(name, url) {
   const existingSite = sites.find(site => site.name === name && site.url === url);
@@ -38,17 +49,6 @@ async function saveSites(name, url) {
     const newSite = { name, url, count: 1 };
     sites.push(newSite);
     await pool.query('INSERT INTO sites (name, url, count) VALUES ($1, $2, $3)', [name, url, 1]);
-  }
-}
-
-// PostgreSQL에서 teacherSites를 로드하는 함수
-async function loadTeacherSites() {
-  try {
-    const res = await pool.query('SELECT * FROM teacher_sites');
-    teacherSites = res.rows;
-  } catch (err) {
-    console.log(err);
-    teacherSites = [];
   }
 }
 
@@ -68,6 +68,18 @@ async function saveTeacherSites(name, url) {
 // 서버 시작 시 sites 및 teacherSites 로드
 loadSites();
 loadTeacherSites();
+
+const users = [{ username: 'teacher', password: '0123456789' }]; // 실제로는 데이터베이스에 저장된 사용자 정보로 대체
+
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    const user = users.find(u => u.username === username && u.password === password);
+    if (user) {
+        res.json({ success: true });
+    } else {
+        res.json({ success: false });
+    }
+});
 
 app.post('/submit', async (req, res) => {
   const { name, url } = req.body;
