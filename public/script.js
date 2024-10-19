@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const closePopup = document.getElementById('closePopup');
     const popupForm = document.getElementById('popupForm');
     const teacherSites = document.getElementById('teacherSites');
+    const loginPopup = document.getElementById('loginPopup');
+    const loginForm = document.getElementById('loginForm');
+    const closeLoginPopup = document.getElementById('closeLoginPopup');
     
     form.addEventListener('submit', function(event) {
         event.preventDefault(); // 폼의 기본 제출 동작을 막습니다.
@@ -52,7 +55,35 @@ document.addEventListener('DOMContentLoaded', function() {
     displayStoredData();
 
     addSiteButton.addEventListener('click', function() {
-        popup.style.display = 'block';
+        loginPopup.style.display = 'block';
+    });
+
+    closeLoginPopup.addEventListener('click', function() {
+        loginPopup.style.display = 'none';
+    });
+
+    loginForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        // 서버로 로그인 정보 전송
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loginPopup.style.display = 'none';
+                popup.style.display = 'block';
+            } else {
+                alert('로그인 실패: 잘못된 사용자 이름 또는 비밀번호입니다.');
+            }
+        });
     });
 
     closePopup.addEventListener('click', function() {
