@@ -69,7 +69,7 @@ async function saveTeacherSites(name, url) {
 loadSites();
 loadTeacherSites();
 
-const users = [{ username: 'teacher', password: '0123456789' }]; // 실제로는 데이터베이스에 저장된 사용자 정보로 대체
+const users = [{ username: 'teacher', password: 'password' }]; // 실제로는 데이터베이스에 저장된 사용자 정보로 대체
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
@@ -101,6 +101,32 @@ app.post('/submitTeacherSite', async (req, res) => {
 
 app.get('/teacherSites', (req, res) => {
   res.json(teacherSites);
+});
+
+// 시간표 데이터 가져오기
+app.get('/timetable', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM timetable');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('서버 오류');
+  }
+});
+
+// 시간표 데이터 저장
+app.post('/timetable', async (req, res) => {
+  const { time, monday, tuesday, wednesday, thursday, friday } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO timetable (time, monday, tuesday, wednesday, thursday, friday) VALUES ($1, $2, $3, $4, $5, $6)',
+      [time, monday, tuesday, wednesday, thursday, friday]
+    );
+    res.send('시간표 데이터 저장 완료');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('서버 오류');
+  }
 });
 
 // 루트 경로 추가

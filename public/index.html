@@ -22,7 +22,7 @@
                     <li><a href="#classroom">알림장</a></li>
                     <li><a href="#friend">친구들이 좋아하는 사이트</a></li>
                     <li><a href="#teacher">수업시간에 사용하는 사이트</a></li>
-                    <li><a href="#">시간표</a></li>
+                    <li><a href="#timetable">시간표</a></li>
                 </ul>
             </nav>
         </header>
@@ -62,17 +62,55 @@
                             <button type="button" id="closePopup">취소</button>
                         </form>
                     </div>
+                    
+                    <div id="loginPopup" class="popup">
+                        <form id="loginForm">
+                            <label for="username">사용자 이름:</label>
+                            <input type="text" id="username" name="username" required>
+                            <label for="password">비밀번호:</label>
+                            <input type="password" id="password" name="password" required>
+                            <button type="submit">로그인</button>
+                            <button type="button" id="closeLoginPopup">취소</button>
+                        </form>
+                    </div>
                 </section>
-                <div id="loginPopup" class="popup">
-                    <form id="loginForm">
-                        <label for="username">사용자 이름:</label>
-                        <input type="text" id="username" name="username" required>
-                        <label for="password">비밀번호:</label>
-                        <input type="password" id="password" name="password" required>
-                        <button type="submit">로그인</button>
-                        <button type="button" id="closeLoginPopup">취소</button>
-                    </form>
-                </div>
+                <section id="timetable">
+                    <h1>시간표</h1>
+                    <table id="timetableTable">
+                        <thead>
+                            <tr>
+                                <th>시간</th>
+                                <th>월요일</th>
+                                <th>화요일</th>
+                                <th>수요일</th>
+                                <th>목요일</th>
+                                <th>금요일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 시간표 데이터가 여기에 삽입됩니다. -->
+                        </tbody>
+                    </table>
+                    <button id="editTimetableButton">시간표 수정</button>
+                    <div id="timetablePopup" class="popup">
+                        <form id="timetableForm">
+                            <label for="time">시간:</label>
+                            <input type="text" id="time" name="time" required>
+                            <label for="monday">월요일:</label>
+                            <input type="text" id="monday" name="monday">
+                            <label for="tuesday">화요일:</label>
+                            <input type="text" id="tuesday" name="tuesday">
+                            <label for="wednesday">수요일:</label>
+                            <input type="text" id="wednesday" name="wednesday">
+                            <label for="thursday">목요일:</label>
+                            <input type="text" id="thursday" name="thursday">
+                            <label for="friday">금요일:</label>
+                            <input type="text" id="friday" name="friday">
+                            <button type="submit">저장</button>
+                            <button type="button" id="closeTimetablePopup">취소</button>
+                        </form>
+                    </div>
+                </section>
             </div>
         </div>
         <footer></footer>

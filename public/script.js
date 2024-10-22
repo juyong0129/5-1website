@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('siteForm');
     const output = document.getElementById('output');
     const addSiteButton = document.getElementById('addSiteButton');
+    const editSiteButton = document.getElementById('editSiteButton');
     const popup = document.getElementById('popup');
     const closePopup = document.getElementById('closePopup');
     const popupForm = document.getElementById('popupForm');
@@ -9,7 +10,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginPopup = document.getElementById('loginPopup');
     const loginForm = document.getElementById('loginForm');
     const closeLoginPopup = document.getElementById('closeLoginPopup');
-    
+    const editPopup = document.getElementById('editPopup');
+    const closeEditPopup = document.getElementById('closeEditPopup');
+    const editForm = document.getElementById('editForm');
+    const timetableButton = document.getElementById('editTimetableButton');
+    const timetablePopup = document.getElementById('timetablePopup');
+    const closeTimetablePopup = document.getElementById('closeTimetablePopup');
+    const timetableForm = document.getElementById('timetableForm');
+    const timetableTableBody = document.getElementById('timetableTable').getElementsByTagName('tbody')[0];
+
     form.addEventListener('submit', function(event) {
         event.preventDefault(); // 폼의 기본 제출 동작을 막습니다.
         
@@ -58,8 +67,20 @@ document.addEventListener('DOMContentLoaded', function() {
         loginPopup.style.display = 'block';
     });
 
+    editSiteButton.addEventListener('click', function() {
+        editPopup.style.display = 'block';
+    });
+
     closeLoginPopup.addEventListener('click', function() {
         loginPopup.style.display = 'none';
+    });
+
+    closePopup.addEventListener('click', function() {
+        popup.style.display = 'none';
+    });
+
+    closeEditPopup.addEventListener('click', function() {
+        editPopup.style.display = 'none';
     });
 
     loginForm.addEventListener('submit', function(event) {
@@ -86,10 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    closePopup.addEventListener('click', function() {
-        popup.style.display = 'none';
-    });
-
     popupForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const siteName = document.getElementById('siteName').value;
@@ -110,6 +127,26 @@ document.addEventListener('DOMContentLoaded', function() {
         popupForm.reset();
     });
 
+    editForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const siteName = document.getElementById('editSiteName').value;
+        const siteUrl = document.getElementById('editSiteUrl').value;
+        fetch('/updateTeacherSite', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: siteName, url: siteUrl })
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data);
+            displayTeacherSites();
+        });
+        editPopup.style.display = 'none';
+        editForm.reset();
+    });
+
     function displayTeacherSites() {
         fetch('/teacherSites')
         .then(response => response.json())
@@ -121,5 +158,58 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    displayTeacherSites();
+    timetableButton.addEventListener('click', function() {
+        timetablePopup.style.display = 'block';
+    });
+
+    closeTimetablePopup.addEventListener('click', function() {
+        timetablePopup.style.display = 'none';
+    });
+
+    timetableForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const time = document.getElementById('time').value;
+        const monday = document.getElementById('monday').value;
+        const tuesday = document.getElementById('tuesday').value;
+        const wednesday = document.getElementById('wednesday').value;
+        const thursday = document.getElementById('thursday').value;
+        const friday = document.getElementById('friday').value;
+
+        fetch('/timetable', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ time, monday, tuesday, wednesday, thursday, friday })
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data);
+            fetchTimetable(); // 데이터를 저장한 후 저장된 데이터를 표시
+        });
+        timetablePopup.style.display = 'none';
+        timetableForm.reset();
+    });
+
+    function fetchTimetable() {
+        fetch('/timetable')
+        .then(response => response.json())
+        .then(data => {
+            timetableTableBody.innerHTML = '';
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.time}</td>
+                    <td>${row.monday}</td>
+                    <td>${row.tuesday}</td>
+                    <td>${row.wednesday}</td>
+                    <td>${row.thursday}</td>
+                    <td>${row.friday}</td>
+                `;
+                timetableTableBody.appendChild(tr);
+            });
+        });
+    }
+
+    fetchTimetable(); // 페이지 로드 시 저장된 데이터를 출력
 });

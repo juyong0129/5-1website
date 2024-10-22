@@ -54,3 +54,26 @@ nav ul li a:hover {
     padding: 20px;
     z-index: 1000;
 }
+
+#timetableTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#timetableTable th, #timetableTable td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+}
+
+#timetablePopup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 1px solid black;
+    padding: 20px;
+    z-index: 1000;
+}
