@@ -13,11 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const editPopup = document.getElementById('editPopup');
     const closeEditPopup = document.getElementById('closeEditPopup');
     const editForm = document.getElementById('editForm');
-    const timetableButton = document.getElementById('editTimetableButton');
-    const timetablePopup = document.getElementById('timetablePopup');
-    const closeTimetablePopup = document.getElementById('closeTimetablePopup');
-    const timetableForm = document.getElementById('timetableForm');
-    const timetableTableBody = document.getElementById('timetableTable').getElementsByTagName('tbody')[0];
 
     form.addEventListener('submit', function(event) {
         event.preventDefault(); // 폼의 기본 제출 동작을 막습니다.
@@ -101,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 loginPopup.style.display = 'none';
                 popup.style.display = 'block';
-                timetablePopup.style.display = 'block'; // 로그인 성공 시 시간표 수정 팝업도 열림
             } else {
                 alert('로그인 실패: 잘못된 사용자 이름 또는 비밀번호입니다.');
             }
@@ -160,58 +154,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     displayTeacherSites();
-
-    timetableButton.addEventListener('click', function() {
-        loginPopup.style.display = 'block'; // 시간표 수정 버튼 클릭 시 로그인 팝업 열림
-    });
-
-    closeTimetablePopup.addEventListener('click', function() {
-        timetablePopup.style.display = 'none';
-    });
-
-    timetableForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const time = document.getElementById('time').value;
-        const monday = document.getElementById('monday').value;
-        const tuesday = document.getElementById('tuesday').value;
-        const wednesday = document.getElementById('wednesday').value;
-        const thursday = document.getElementById('thursday').value;
-        const friday = document.getElementById('friday').value;
-        fetch('/timetable', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ time, monday, tuesday, wednesday, thursday, friday })
-        })
-        .then(response => response.text())
-        .then(data => {
-            alert(data);
-            fetchTimetable(); // 데이터를 저장한 후 저장된 데이터를 표시
-        });
-        timetablePopup.style.display = 'none';
-        timetableForm.reset();
-    });
-
-    function fetchTimetable() {
-        fetch('/timetable')
-        .then(response => response.json())
-        .then(data => {
-            timetableTableBody.innerHTML = '';
-            data.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${row.time}</td>
-                    <td>${row.monday}</td>
-                    <td>${row.tuesday}</td>
-                    <td>${row.wednesday}</td>
-                    <td>${row.thursday}</td>
-                    <td>${row.friday}</td>
-                `;
-                timetableTableBody.appendChild(tr);
-            });
-        });
-    }
-
-    fetchTimetable(); // 페이지 로드 시 저장된 데이터를 출력
 });
