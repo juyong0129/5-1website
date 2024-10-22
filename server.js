@@ -69,7 +69,7 @@ async function saveTeacherSites(name, url) {
 loadSites();
 loadTeacherSites();
 
-const users = [{ username: 'teacher', password: 'password' }]; // 실제로는 데이터베이스에 저장된 사용자 정보로 대체
+const users = [{ username: 'teacher', password: '0123456789' }]; // 실제로는 데이터베이스에 저장된 사용자 정보로 대체
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;

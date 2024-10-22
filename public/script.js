@@ -101,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 loginPopup.style.display = 'none';
                 popup.style.display = 'block';
+                timetablePopup.style.display = 'block'; // 로그인 성공 시 시간표 수정 팝업도 열림
             } else {
                 alert('로그인 실패: 잘못된 사용자 이름 또는 비밀번호입니다.');
             }
@@ -158,8 +159,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    displayTeacherSites();
+
     timetableButton.addEventListener('click', function() {
-        timetablePopup.style.display = 'block';
+        loginPopup.style.display = 'block'; // 시간표 수정 버튼 클릭 시 로그인 팝업 열림
     });
 
     closeTimetablePopup.addEventListener('click', function() {
@@ -174,7 +177,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const wednesday = document.getElementById('wednesday').value;
         const thursday = document.getElementById('thursday').value;
         const friday = document.getElementById('friday').value;
-
         fetch('/timetable', {
             method: 'POST',
             headers: {
