@@ -21,8 +21,8 @@
                     <li><a href="#padlet">padlet</a></li>
                     <li><a href="#classroom">알림장</a></li>
                     <li><a href="#friend">친구들이 좋아하는 사이트</a></li>
-                    <li><a href="#teacher">수업시간에 사용하는 사이트</a></li>
-                    <li><a href="#">시간표</a></li>
+                    <li><a href="#image">사진(제주도🍊)</li>
+                    <li><a href="#time">시간표⏳</li>
                 </ul>
             </nav>
         </header>
@@ -31,10 +31,10 @@
             <div id="main">
                 <section id="padlet">
                     <h1><a href="https://padlet.com/dongbuk18/5-1-ml7gaka49amkzcoj" target="_blank">padlet 바로가기</a></h1>
-                    <h1><img src="image/padlet.png" alt="padlet이미지" width="50%"></h1>
+                    <div class="padlet-embed" style="border:1px solid rgba(0,0,0,0.1);border-radius:2px;box-sizing:border-box;overflow:hidden;position:relative;width:80%;background:#F4F4F4"><p style="padding:0;margin:0"><iframe src="https://padlet.com/embed/ml7gaka49amkzcoj" frameborder="0" allow="camera;microphone;geolocation" style="width:100%;height:608px;display:block;padding:0;margin:0"></iframe></p><div style="display:flex;align-items:center;justify-content:end;margin:0;height:28px"><a href="https://padlet.com?ref=embed" style="display:block;flex-grow:0;margin:0;border:none;padding:0;text-decoration:none" target="_blank"><div style="display:flex;align-items:center;"><img src="https://padlet.net/embeds/made_with_padlet_2022.png" width="114" height="28" style="padding:0;margin:0;background:0 0;border:none;box-shadow:none" alt="Padlet으로 만듦"></div></a></div></div>
                 </section>
                 <section id="classroom">
-                    <h1><a target="_blank" href="https://classroom.google.com/c/NjY0MDgyODI5MDcy">classroom 바로가기</a></h1>
+                    <h1><a href="https://classroom.google.com/c/NjY0MDgyODI5MDcy" target="_blank">classroom 바로가기</a></h1>
                     <h1><img src="image/classroom.png" alt="classroom이미지" width="50%"></h1>
                 </section>
                 <section id="friend">
@@ -48,30 +48,93 @@
                     </form>
                     <div id="output"></div>
                 </section>
-                <section id="teacher">
-                    <h1>수업시간에 사용하는 사이트</h1>
-                    <ul id="teacherSites"></ul>
-                    <button id="addSiteButton">사이트 추가</button>
-                    <div id="popup" class="popup">
-                        <form id="popupForm">
-                            <label for="siteName">사이트 이름:</label>
-                            <input type="text" id="siteName" name="siteName" required>
-                            <label for="siteUrl">사이트 주소:</label>
-                            <input type="url" id="siteUrl" name="siteUrl" required>
-                            <button type="submit">저장</button>
-                            <button type="button" id="closePopup">취소</button>
-                        </form>
-                    </div>
-                    <div id="loginPopup" class="popup">
-                        <form id="loginForm">
-                            <label for="username">사용자 이름:</label>
-                            <input type="text" id="username" name="username" required>
-                            <label for="password">비밀번호:</label>
-                            <input type="password" id="password" name="password" required>
-                            <button type="submit">로그인</button>
-                            <button type="button" id="closeLoginPopup">취소</button>
-                        </form>
-                    </div>
+                <section id="image">
+                    <h1 class="item">학급사진(from 새우튀김 google drive)</h1>
+                    <h1><img src="image/학급1.JPG" alt="학급사진1" width="30%"></h1>
+                    <h1><a href="https://drive.google.com/drive/folders/1-5BY7QuDKzOEGd5CvAdKa4qbdvKDWHCp" target="_blank">google drive 바로가기</a></h1>
+                </section>
+                <section id="time">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>교시</th>
+                                <th>시간</th>
+                                <th>월</th>
+                                <th>화</th>
+                                <th>수</th>
+                                <th>목</th>
+                                <th>금</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1교시</td>
+                                <td>09:00-09:40</td>
+                                <td>국어</td>
+                                <td>영어</td>
+                                <td>도서관</td>
+                                <td>국어</td>
+                                <td>영어</td>
+                            </tr>
+                            <tr>
+                                <td>2교시</td>
+                                <td>09:50-10:30</td>
+                                <td>사회</td>
+                                <td>영어</td>
+                                <td>국어</td>
+                                <td>체육</td>
+                                <td>영어</td>
+                            </tr>
+                            <tr>
+                                <td>3교시</td>
+                                <td>10:40-11:20</td>
+                                <td>영어</td>
+                                <td>미술</td>
+                                <td>과학</td>
+                                <td>음악</td>
+                                <td>국어</td>
+                            </tr>
+                            <tr>
+                                <td>4교시</td>
+                                <td>11:30-12:10</td>
+                                <td>수학</td>
+                                <td>미술</td>
+                                <td>과학</td>
+                                <td>과학</td>
+                                <td>SW</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7">점심시간</td>
+                            </tr>
+                            <tr>
+                                <td>5교시</td>
+                                <td>13:00-13:40</td>
+                                <td>사/도</td>
+                                <td>국어</td>
+                                <td>영어</td>
+                                <td>수학</td>
+                                <td>중국어</td>
+                            </tr>
+                            <tr>
+                                <td>6교시</td>
+                                <td>13:50-14:30</td>
+                                <td>실/창</td>
+                                <td>사회</td>
+                                <td>컴퓨터</td>
+                                <td>영어</td>
+                                <td>수학</td>
+                            </tr>
+                            <tr>
+                                <td>7교시</td>
+                                <td>14:30-15:10</td>
+                                <td>동아리</td>
+                                <td>수학</td>
+                                <td>체육</td>
+                                <td>영어</td>
+                                <td>동아리</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </section>
             </div>
         </div>
