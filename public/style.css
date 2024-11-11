@@ -33,7 +33,7 @@ nav ul li {
 
 nav ul li a {
     display: block;
-    color: white;
+    color: black;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -58,5 +58,52 @@ th, td {
 
 /* 헤더 스타일 */
 th {
-    background-color: #f2f2f2; /* 헤더 배경색 */
+    background-color:gold; /* 헤더 배경색 */
+    width: 14.28%;
+}
+
+table {
+    width: 80%; /* 너비를 80%로 설정 */
+    border-collapse: collapse; /* 중복 테두리 제거 */
+}
+
+/* 1교시 ~ 7교시 컬러 */
+tbody tr:nth-child(1) td:first-child {
+    background-color: lightcoral;
+    color: black;
+}
+
+tbody tr:nth-child(2) td:first-child {
+    background-color: lightsalmon;
+    color: black;
+}
+
+tbody tr:nth-child(3) td:first-child {
+    background-color: rgb(255, 239, 151);
+    color: black;
+}
+
+tbody tr:nth-child(4) td:first-child {
+    background-color: lightgreen;
+    color: black;
+}
+
+tbody tr:nth-child(5) td:first-child {
+    background-color: lightskyblue;
+    color: black;
+}
+
+tbody tr:nth-child(6) td:first-child {
+    background-color: rgb(211, 149, 255);
+    color: black;
+}
+
+tbody tr:nth-child(7) td:first-child {
+    background-color: lightpink;
+    color: black;
+}
+
+tbody tr:nth-child(8) td:first-child {
+    background-color: gray;
+    color: black;
 }
