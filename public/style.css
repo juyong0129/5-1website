@@ -33,7 +33,7 @@ nav ul li {
 
 nav ul li a {
     display: block;
-    color: black;
+    color: white;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -106,4 +106,10 @@ tbody tr:nth-child(7) td:first-child {
 tbody tr:nth-child(8) td:first-child {
     background-color: gray;
     color: black;
+}
+
+.item {
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: top;
 }
