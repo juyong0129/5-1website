@@ -1,48 +1,49 @@
-/* 전체 페이지 스타일 */
+/* 기본 스타일 */
 body {
     background-color: beige;
     font-family: "Jua", sans-serif;
     font-weight: 400;
     font-style: normal;
+    margin: 0;
 }
 
-/* 헤더 스타일 */
 header {
     background-color: chocolate;
     display: flex;
     align-items: center;
 }
 
-/* 로고 스타일 */
-#logo {
-    margin-right: 20px; /* 필요에 따라 간격 조정 */
-}
-
-/* 네비게이션 바 고정 스타일 */
+/* 네비게이션 바 스타일 */
 nav {
-    flex-grow: 1;
-    position: fixed; /* 화면에 고정 */
-    top: 0; /* 화면 상단에 위치 */
-    width: 100%; /* 화면 너비에 맞게 설정 */
+    position: fixed;
+    top: 0;
+    width: 100%;
     background-color: chocolate;
-    z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
+    z-index: 1000;
+    display: flex;
+    align-items: center;
 }
 
-/* 네비게이션 목록 스타일 */
+/* 로고 스타일 */
+#logo img {
+    width: 40px;
+    height: auto;
+    margin-right: 20px; /* 다른 메뉴 항목과 간격 */
+}
+
 nav ul {
-    list-style-type: none; /* 기본 목록 스타일 제거 */
+    list-style-type: none;
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: flex-start;
+    align-items: center; /* 세로 가운데 정렬 */
 }
 
-/* 네비게이션 항목 스타일 */
+/* 네비게이션 링크 스타일 */
 nav ul li {
     margin-right: 20px; /* 필요에 따라 간격 조정 */
 }
 
-/* 네비게이션 링크 스타일 */
 nav ul li a {
     display: block;
     color: white;
@@ -55,12 +56,12 @@ nav ul li a:hover {
     background-color: rgb(214, 167, 134);
 }
 
-/* 페이지 내용이 네비게이션 바 아래에서 시작하도록 마진 설정 */
+/* 메인 콘텐츠가 네비게이션 바 아래서부터 시작 */
 .content {
     margin-top: 60px; /* 네비게이션 바 높이만큼의 여백 */
 }
 
-/* 표 스타일 */
+/* 테이블 스타일 */
 table {
     width: 80%; /* 너비를 80%로 설정 */
     border-collapse: collapse; /* 중복 테두리 제거 */
@@ -120,7 +121,7 @@ tbody tr:nth-child(8) td:first-child {
     color: black;
 }
 
-/* 항목 스타일 */
+/* 이미지 스타일 */
 .item {
     display: inline-block;
     margin-right: 20px;
