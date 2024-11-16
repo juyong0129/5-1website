@@ -43,18 +43,6 @@ async function saveSites(name, url) {
 // 서버 시작 시 sites 로드
 loadSites();
 
-const users = [{ username: 'teacher', password: 'password' }]; // 실제로는 데이터베이스에 저장된 사용자 정보로 대체
-
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    const user = users.find(u => u.username === username && u.password === password);
-    if (user) {
-        res.json({ success: true });
-    } else {
-        res.json({ success: false });
-    }
-});
-
 app.post('/submit', async (req, res) => {
   const { name, url } = req.body;
   console.log(`Received data: ${name}, ${url}`); // 요청 데이터 로그
