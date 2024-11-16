@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     msgForm.addEventListener("submit", function(event) {
         event.preventDefault();
         const msg = msgInput.value;
-
+        // 아래 코드 완전하지 않고 임시방편
         fetch('/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
