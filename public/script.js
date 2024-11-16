@@ -1,6 +1,26 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() { 
     const form = document.getElementById('siteForm');
     const output = document.getElementById('output');
+    const msgForm = document.querySelector('#msg');
+    const msgInput = document.querySelector('#msgBox');
+    const msgText = document.querySelector('#msgText');
+
+    // 채팅 메시지 전송
+    msgForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const msg = msgInput.value;
+
+        fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: msg })
+        }).then(() => {
+            const li = document.createElement('li');
+            li.textContent = msg;
+            msgText.appendChild(li);
+            msgInput.value = '';
+        }).catch(err => console.error('메시지 전송 실패:', err));
+    });
 
     // 사이트 정보 제출
     form.addEventListener('submit', function(event) {
@@ -58,37 +78,17 @@ document.addEventListener('DOMContentLoaded', function() {
         { start: "14:30", end: "15:10", period: "7교시" }
     ];
 
+    // 현재 교시 업데이트
     function updateCurrentPeriod() {
         const now = new Date();
         const currentTime = now.toTimeString().slice(0, 5);
         const currentPeriodElement = document.getElementById('currentPeriod');
-        const dayOfWeek = now.getDay(); // 일요일(0)부터 토요일(6)까지 반환
-        let currentPeriod = "";
-        let currentClass = "";
 
-        // 주말인 경우 메시지 표시
-        if (dayOfWeek === 0 || dayOfWeek === 6) {
-            currentPeriod = "오늘은 수업이 없습니다!";
-        } else {
-            // 평일인 경우 시간에 따라 메시지 표시
-            let isPeriodFound = false;
-            for (const period of periods) {
-                if (currentTime >= period.start && currentTime < period.end) {
-                    currentPeriod = `지금은 ${period.period}입니다!`;
-                    currentClass = period.period;  // 현재 교시 기록
-                    isPeriodFound = true;
-                    break;
-                }
-            }
-            // 수업 시간이 모두 끝난 경우 메시지
-            if (!isPeriodFound) {
-                if (currentTime < periods[0].start) {
-                    currentPeriod = "수업이 아직 시작되지 않았습니다.";
-                } else if (currentTime >= periods[periods.length - 1].end) {
-                    currentPeriod = "오늘 수업이 모두 끝났습니다!";
-                } else {
-                    currentPeriod = "쉬는 시간입니다!"; // 쉬는 시간
-                }
+        let currentPeriod = "쉬는 시간입니다!";
+        for (const period of periods) {
+            if (currentTime >= period.start && currentTime < period.end) {
+                currentPeriod = `지금은 ${period.period}입니다!`;
+                break;
             }
         }
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="ko">
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,10 +29,8 @@
         <div class="content">
             <div id="main">
                 <section id="padlet">
-                    <h1></h1>
-                    <h1></h1>
                     <h1><a href="https://padlet.com/dongbuk18/5-1-ml7gaka49amkzcoj" target="_blank">padlet 바로가기</a></h1>
-                    <div class="padlet-embed" style="border:1px solid rgba(0,0,0,0.1);border-radius:2px;box-sizing:border-box;overflow:hidden;position:relative;width:90%;background:#F4F4F4"><p style="padding:0;margin:0"><iframe src="https://padlet.com/embed/ml7gaka49amkzcoj" frameborder="0" allow="camera;microphone;geolocation" style="width:100%;height:608px;display:block;padding:0;margin:0"></iframe></p><div style="display:flex;align-items:center;justify-content:end;margin:0;height:28px"><a href="https://padlet.com?ref=embed" style="display:block;flex-grow:0;margin:0;border:none;padding:0;text-decoration:none" target="_blank"><div style="display:flex;align-items:center;"><img src="https://padlet.net/embeds/made_with_padlet_2022.png" width="114" height="28" style="padding:0;margin:0;background:0 0;border:none;box-shadow:none" alt="Padlet으로 만듦"></div></a></div></div>
+                    <iframe src="https://padlet.com/embed/ml7gaka49amkzcoj" frameborder="0" allow="camera;microphone;geolocation" style="width:90%;height:608px;display:block"></iframe>
                 </section>
                 <section id="classroom">
                     <h1><a href="https://classroom.google.com/c/NjY0MDgyODI5MDcy" target="_blank">classroom 바로가기</a></h1>
@@ -47,6 +45,7 @@
                         <input type="url" id="question2" name="question2" required><br><br>
                         <input type="submit" value="제출">
                     </form>
+                    <div id="alertBox" style="display:none; color: green;"></div>
                     <div id="output"></div>
                 </section>
                 <section id="image">
@@ -140,14 +139,16 @@
                             </tr>
                         </tbody>
                     </table>
+
                     <h1 id="currentPeriod"></h1>
                 </section>
                 <section id="talk">
-                    <h1 style="color: red;">실시간 채팅 개발예정!</h1>
+                    <h1 style="color: red;">실시간 채팅 개발중 재발 사용하지 마세요!</h1>
+                    <ul id="msgText"></ul>
                     <form id="msg">
                         <label for="msgBox">😁</label>
-                        <input type="text" id="msgBox">
-                        <button type="submit"></button>
+                        <input type="text" id="msgBox" required>
+                        <button type="submit" id="msgBtn">⤶</button>
                     </form>
                 </section>
             </div>
@@ -156,3 +157,5 @@
     </div>
 </body>
 </html>
+
+                    
