@@ -1,27 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() { 
     const form = document.getElementById('siteForm');
     const output = document.getElementById('output');
-    const msgForm = document.querySelector('#msg');
-    const msgInput = document.querySelector('#msgBox');
-    const msgText = document.querySelector('#msgText');
-
-    // 채팅 메시지 전송
-    msgForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-        const msg = msgInput.value;
-        // 아래 코드 완전하지 않고 임시방편
-        fetch('/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: msg })
-        }).then(() => {
-            const li = document.createElement('li');
-            li.textContent = msg;
-            msgText.appendChild(li);
-            msgInput.value = '';
-        }).catch(err => console.error('메시지 전송 실패:', err));
-    });
-
+    
     // 사이트 정보 제출
     form.addEventListener('submit', function(event) {
         event.preventDefault(); // 폼의 기본 제출 동작을 막습니다.
