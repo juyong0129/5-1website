@@ -71,6 +71,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             }
         }
+        
+        if (currentTime > "15:10") {
+            currentPeriod = "수업이 종료되었습니다!";
+        }
 
         currentPeriodElement.textContent = `현재 시각: ${currentTime} - ${currentPeriod}`;
     }

@@ -127,3 +127,25 @@ tbody tr:nth-child(8) td:first-child {
     margin-right: 20px;
     vertical-align: top;
 }
+
+#msgBox {
+    font-family: "Jua", sans-serif;
+    width: 70%;
+    height: 30px;
+}
+
+#msgBtn {
+    font-family: "Jua", sans-serif;
+    font-size: medium;
+    width: 20%;
+    height: 35px;
+}
+
+#question1, #question2{
+    font-family: "Jua", sans-serif;
+}
+
+#siteBtn {
+    font-family: "Jua", sans-serif;
+    font-size: small;
+}
