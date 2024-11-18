@@ -1,10 +1,30 @@
-document.addEventListener('DOMContentLoaded', function() { 
+document.addEventListener('DOMContentLoaded', function () {
+    // 설문조사 관련 요소
     const form = document.getElementById('siteForm');
     const output = document.getElementById('output');
     
-    // 사이트 정보 제출
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // 폼의 기본 제출 동작을 막습니다.
+    // 실시간 채팅 관련 요소
+    const msgForm = document.getElementById('msg');
+    const msgInput = document.getElementById('msgBox');
+    const msgText = document.getElementById('msgText');
+
+    // 교시 시간표 데이터
+    const periods = [
+        { start: "09:00", end: "09:40", period: "1교시" },
+        { start: "09:50", end: "10:30", period: "2교시" },
+        { start: "10:40", end: "11:20", period: "3교시" },
+        { start: "11:30", end: "12:10", period: "4교시" },
+        { start: "13:00", end: "13:40", period: "5교시" },
+        { start: "13:50", end: "14:30", period: "6교시" },
+        { start: "14:30", end: "15:10", period: "7교시" }
+    ];
+
+    // Socket.IO 클라이언트 초기화
+    const socket = io();
+
+    // 설문조사 폼 제출 처리
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
         
         const question1 = document.getElementById('question1').value;
         const question2 = document.getElementById('question2').value;
@@ -20,10 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.text())
         .then(data => {
             alert(data);
-            displayStoredData(); // 데이터를 저장한 후 저장된 데이터를 표시
+            displayStoredData();
         });
-        
-        // 필요시 폼 필드 초기화
+
         form.reset();
     });
 
@@ -46,17 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 페이지 로드 시 저장된 데이터를 출력
     displayStoredData();
-
-    // 교시 정보
-    const periods = [
-        { start: "09:00", end: "09:40", period: "1교시" },
-        { start: "09:50", end: "10:30", period: "2교시" },
-        { start: "10:40", end: "11:20", period: "3교시" },
-        { start: "11:30", end: "12:10", period: "4교시" },
-        { start: "13:00", end: "13:40", period: "5교시" },
-        { start: "13:50", end: "14:30", period: "6교시" },
-        { start: "14:30", end: "15:10", period: "7교시" }
-    ];
 
     // 현재 교시 업데이트
     function updateCurrentPeriod() {
@@ -81,5 +89,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 페이지 로드 시와 매 분마다 현재 교시 업데이트
     updateCurrentPeriod();
-    setInterval(updateCurrentPeriod, 60000); // 1분마다 업데이트
+    setInterval(updateCurrentPeriod, 60000);
+
+    // 실시간 채팅: 메시지 전송 처리
+    msgForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const message = msgInput.value;
+        if (message.trim()) {
+            socket.emit('chatMessage', message); // 서버로 메시지 전송
+            msgInput.value = ''; // 입력창 비우기
+        }
+    });
+
+    // 서버에서 메시지 수신 처리
+    socket.on('chatMessage', function (msg) {
+        const newMsg = document.createElement('li');
+        newMsg.textContent = msg;
+        msgText.appendChild(newMsg);
+    });
 });

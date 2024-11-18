@@ -2,7 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const { Pool } = require('pg'); // pg 모듈 추가
+const http = require('http'); // HTTP 서버 생성
+const { Server } = require('socket.io'); // Socket.IO에서 Server 가져오기
+
 const app = express();
+const server = http.createServer(app); // HTTP 서버로 앱 감싸기
+const io = new Server(server); // Socket.IO 서버 생성
 const port = 3000;
 
 app.use(bodyParser.json());
@@ -59,6 +64,19 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(port, () => {
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  // 클라이언트로부터 받은 메시지 처리
+  socket.on('chatMessage', (msg) => {
+    console.log(`Message received: ${msg}`);
+    io.emit('chatMessage', msg); // 모든 클라이언트에 메시지 전송
+  });
+
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
+});
+server.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
