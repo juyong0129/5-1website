@@ -4,3 +4,9 @@ CREATE TABLE sites (
     url TEXT NOT NULL,
     count INTEGER DEFAULT 1
 );
+
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    text TEXT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

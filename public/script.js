@@ -66,6 +66,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // 페이지 로드 시 저장된 데이터를 출력
     displayStoredData();
 
+    fetch('/messages')
+    .then(response => response.json())
+    .then(messages => {
+        console.log(messages); // 메시지 배열 출력
+    })
+  .catch(error => console.error('Error fetching messages:', error));
+
     // 현재 교시 업데이트
     function updateCurrentPeriod() {
         const now = new Date();
