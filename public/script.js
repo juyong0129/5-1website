@@ -66,13 +66,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // 페이지 로드 시 저장된 데이터를 출력
     displayStoredData();
 
-    fetch('/messages')
-    .then(response => response.json())
-    .then(messages => {
-        console.log(messages); // 메시지 배열 출력
-    })
-  .catch(error => console.error('Error fetching messages:', error));
-
+    function displayStoredTalk() {
+        // 서버에서 메시지 로드하여 ul에 추가
+        fetch('/messages')
+        .then(response => response.json())
+        .then(messages => {
+            const msgText = document.getElementById('msgText'); // ul 요소
+            messages.forEach(msg => {
+                const newMsg = document.createElement('li'); // li 요소 생성
+                newMsg.textContent = msg.text; // 메시지 텍스트 설정
+                msgText.appendChild(newMsg); // ul에 li 추가
+            });
+        })
+        .catch(error => console.error('Error fetching messages:', error));
+    }
+    
+    displayStoredTalk()
+    
     // 현재 교시 업데이트
     function updateCurrentPeriod() {
         const now = new Date();
