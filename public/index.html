@@ -17,6 +17,15 @@
             <nav>
                 <ul>
                     <li id="logo"><a href="index.html"><img src="image/5학년 1반 로고.png" alt="logo" width="40"></a></li>
+                    <li id="loginStatus">
+                        <div id="loginNav">
+                            <a href="#" id="loginText">Login</a>
+                        </div>
+                        <div id="userInfo" style="display: none;">
+                            <span id="welcomeMessage"></span>
+                            <button id="logoutBtn">로그아웃</button>
+                        </div>
+                    </li>
                     <li><a href="#padlet">padlet</a></li>
                     <li><a href="#classroom">알림장</a></li>
                     <li><a href="#friend">친구들이 좋아하는 사이트</a></li>
@@ -155,6 +164,32 @@
             </div>
         </div>
         <footer></footer>
+    </div>
+    <!-- 로그인 모달 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>로그인</h2>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="사용자 이름" required>
+                <input type="password" id="password" placeholder="비밀번호" required>
+                <button type="submit" id="loginBtn">로그인</button>
+            </form>
+            <p id="registerLink">만약 계정이 없다면 지금 바로 계정을 만들어 보세요!</p>
+        </div>
+    </div>
+
+    <!-- 회원가입 모달 -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>회원가입</h2>
+            <form id="registerForm">
+                <input type="text" id="regUsername" placeholder="사용자 이름" required>
+                <input type="password" id="regPassword" placeholder="비밀번호" required>
+                <button type="submit" id="registerBtn">회원가입</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

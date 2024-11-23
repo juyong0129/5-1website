@@ -4,6 +4,8 @@ const path = require('path');
 const { Pool } = require('pg'); // pg 모듈 추가
 const http = require('http'); // HTTP 서버 생성
 const { Server } = require('socket.io'); // Socket.IO에서 Server 가져오기
+const bcrypt = require('bcrypt'); // 비밀번호 해싱을 위한 모듈
+const session = require('express-session');
 
 const app = express();
 const server = http.createServer(app); // HTTP 서버로 앱 감싸기
@@ -12,6 +14,11 @@ const port = 3000;
 
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: false
+}));
 
 // PostgreSQL 연결 설정
 const pool = new Pool({
@@ -45,10 +52,10 @@ async function saveSites(name, url) {
   }
 }
 
-// messages 테이블에 메시지 삽입
-async function saveMessages(text) {
-  await pool.query('INSERT INTO messages (text) VALUES ($1)', [text]);
-  console.log('Message saved to database:', text);
+// messages 테이블에 메시지 삽입 함수 수정
+async function saveMessages(username, text) {
+    await pool.query('INSERT INTO messages (username, text) VALUES ($1, $2)', [username, text]);
+    console.log('Message saved to database:', username, text);
 }
 
 async function getMessages() {
@@ -90,15 +97,56 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  socket.on('chatMessage', async (msg) => {
-    console.log(`Message received: ${msg}`);
-    await saveMessages(msg); // 메시지를 데이터베이스에 저장
-    io.emit('chatMessage', msg); // 모든 클라이언트에 메시지 전송
+  socket.on('chatMessage', async (data) => {
+    console.log(`Message received from ${data.username}: ${data.message}`);
+    await saveMessages(data.username, data.message); // 사용자 이름과 메시지를 저장
+    io.emit('chatMessage', data); // 모든 클라이언트에 사용자 이름과 메시지 전송
   });
 
   socket.on('disconnect', () => {
     console.log('A user disconnected');
   });
+});
+
+// 회원가입 엔드포인트
+app.post('/register', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await pool.query(
+            'INSERT INTO users (username, password) VALUES ($1, $2)',
+            [username, hashedPassword]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: '회원가입 실패' });
+    }
+});
+
+// 로그인 엔드포인트
+app.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+        
+        if (result.rows.length > 0) {
+            const validPassword = await bcrypt.compare(password, result.rows[0].password);
+            if (validPassword) {
+                req.session.user = { username };
+                res.json({ success: true });
+                return;
+            }
+        }
+        res.status(401).json({ success: false, message: '로그인 실패' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: '서버 오류' });
+    }
+});
+
+// 로그아웃 엔드포인트
+app.post('/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ success: true });
 });
 
 server.listen(port, () => {

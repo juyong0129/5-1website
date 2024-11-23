@@ -113,15 +113,130 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         const message = msgInput.value;
         if (message.trim()) {
-            socket.emit('chatMessage', message); // 서버로 메시지 전송
-            msgInput.value = ''; // 입력창 비우기
+            // welcomeMessage에서 사용자 이름을 가져옴
+            const username = welcomeMessage.textContent.split(',')[0].replace('환영합니다', '').trim();
+            if (!username) {
+                alert('채팅을 하려면 먼저 로그인해주세요!');
+                
+                // 로그인 버튼에 애니메이션 효과 추가
+                const loginText = document.getElementById('loginText');
+                loginText.classList.add('highlight-animation');
+                
+                // 애니메이션이 끝나면 클래스 제거
+                setTimeout(() => {
+                    loginText.classList.remove('highlight-animation');
+                }, 2000); // 2초 후 제거
+                
+                return;
+            }
+            socket.emit('chatMessage', { username, message });
+            msgInput.value = '';
         }
     });
 
     // 서버에서 메시지 수신 처리
-    socket.on('chatMessage', function (msg) {
+    socket.on('chatMessage', function (data) {
         const newMsg = document.createElement('li');
-        newMsg.textContent = msg;
+        newMsg.textContent = `${data.username}: ${data.message}`; // 사용자 이름과 메시지를 함께 표시
         msgText.appendChild(newMsg);
     });
+
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const loginText = document.getElementById('loginText');
+    const registerLink = document.getElementById('registerLink');
+    const closeBtns = document.getElementsByClassName('close');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const userInfo = document.getElementById('userInfo');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // 모달 열기
+    loginText.onclick = () => {
+        loginModal.style.display = "block";
+    }
+
+    registerLink.onclick = () => {
+        loginModal.style.display = "none";
+        registerModal.style.display = "block";
+    }
+
+    // 모달 닫기
+    Array.from(closeBtns).forEach(btn => {
+        btn.onclick = function() {
+            loginModal.style.display = "none";
+            registerModal.style.display = "none";
+        }
+    });
+
+    // 모달 외부 클릭시 닫기
+    window.onclick = (event) => {
+        if (event.target == loginModal) {
+            loginModal.style.display = "none";
+        }
+        if (event.target == registerModal) {
+            registerModal.style.display = "none";
+        }
+    }
+
+    // 로그인 처리
+    loginForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            loginModal.style.display = "none";
+            loginText.style.display = "none";
+            userInfo.style.display = "block";
+            welcomeMessage.textContent = `환영합니다, ${username}님!`;
+            loginForm.reset();
+        } else {
+            alert(data.message || '로그인 실패');
+        }
+    }
+
+    // 회원가입 처리
+    registerForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+        
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            alert('회원가입 성공!');
+            registerModal.style.display = "none";
+            loginModal.style.display = "block";
+            registerForm.reset();
+        } else {
+            alert(data.message || '회원가입 실패');
+        }
+    }
+
+    // 로그아웃 처리
+    logoutBtn.onclick = async () => {
+        const response = await fetch('/logout', { method: 'POST' });
+        const data = await response.json();
+        
+        if (data.success) {
+            loginText.style.display = "block";
+            userInfo.style.display = "none";
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+    }
 });
