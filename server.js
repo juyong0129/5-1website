@@ -1,38 +1,40 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const { Pool } = require('pg'); // pg 모듈 추가
-const http = require('http'); // HTTP 서버 생성
-const { Server } = require('socket.io'); // Socket.IO에서 Server 가져오기
-const bcrypt = require('bcrypt'); // 비밀번호 해싱을 위한 모듈
+const { Pool } = require('pg');
+const http = require('http');
+const { Server } = require('socket.io');
+const bcrypt = require('bcrypt');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 
 const app = express();
-const server = http.createServer(app); // HTTP 서버로 앱 감싸기
-const io = new Server(server); // Socket.IO 서버 생성
+const server = http.createServer(app);
+const io = new Server(server);
 const port = 3000;
 
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// PostgreSQL 연결 설정
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+});
+
+// 세션 미들웨어 설정
 app.use(session({
     store: new pgSession({
-        pool: pool,                // 기존 pool 사용
-        tableName: 'session'   // 위에서 생성한 테이블 이름
+        pool: pool,
+        tableName: 'session'
     }),
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // production에서만 secure 쿠키 사용
-        maxAge: 30 * 24 * 60 * 60 * 1000 // 30일
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60 * 1000
     }
 }));
 
-// PostgreSQL 연결 설정
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // sites 배열 초기화
 let sites = [];
