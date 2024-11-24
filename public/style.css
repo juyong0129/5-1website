@@ -168,10 +168,8 @@ tbody tr:nth-child(8) td:first-child {
 
 /* 로그인 상태 표시 영역 스타일 */
 #userInfo {
-    display: flex;
+    display: none;
     align-items: center;
-    padding: 14px 16px;
-    color: white;
 }
 
 #welcomeMessage {
@@ -185,12 +183,18 @@ tbody tr:nth-child(8) td:first-child {
     color: white;
     cursor: pointer;
     padding: 0;
-    font-family: "Jua", sans-serif;
-    font-size: 1em;
+    display: flex;
+    align-items: center;
 }
 
-#logoutBtn:hover {
-    color: rgb(214, 167, 134);
+#logoutBtn .material-symbols-outlined {
+    font-size: 24px;  /* 아이콘 크기 조절 */
+    color: white;     /* 아이콘 색상 */
+    padding: 14px 16px;  /* 패딩 추가 */
+}
+
+#logoutBtn:hover .material-symbols-outlined {
+    background-color: rgb(214, 167, 134);  /* 호버 효과 */
 }
 
 /* 모달 스타일 */
