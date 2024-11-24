@@ -113,8 +113,10 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         const message = msgInput.value;
         if (message.trim()) {
-            // welcomeMessage에서 사용자 이름을 가져옴
-            const username = welcomeMessage.textContent.split(',')[0].replace('환영합니다', '').trim();
+            // welcomeMessage에서 사용자 이름을 가져옴는 방식 수정
+            const welcomeText = welcomeMessage.textContent;
+            const username = welcomeText.split('환영합니다,')[1]?.split('님!')[0]?.trim();
+            
             if (!username) {
                 alert('채팅을 하려면 먼저 로그인해주세요!');
                 
@@ -125,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // 애니메이션이 끝나면 클래스 제거
                 setTimeout(() => {
                     loginText.classList.remove('highlight-animation');
-                }, 2000); // 2초 후 제거
+                }, 2000);
                 
                 return;
             }
