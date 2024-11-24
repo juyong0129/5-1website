@@ -170,6 +170,7 @@ tbody tr:nth-child(8) td:first-child {
 #userInfo {
     display: none;
     align-items: center;
+    color: white;
 }
 
 #welcomeMessage {
