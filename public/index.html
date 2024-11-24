@@ -27,13 +27,21 @@
                     <li><a href="#talk">실시간 채팅(베타버전)🆕</a></li>
                     <li id="loginStatus">
                         <div id="loginNav">
-                            <a href="#" id="loginText"><span class="material-symbols-outlined">login</span></a>
+                            <a href="#" id="loginText">
+                                <span class="material-symbols-outlined">login</span>
+                            </a>
                         </div>
                         <div id="userInfo" style="display: none;">
-                            <span id="welcomeMessage"></span>
-                            <a href="#" id="logoutBtn">
-                                <span class="material-symbols-outlined">logout</span>
+                            <a href="#" class="userDropdown">
+                                <span class="material-symbols-outlined">account_circle</span>
                             </a>
+                            <div class="dropdown-content">
+                                <span id="welcomeMessage"></span>
+                                <a href="#" id="logoutBtn">
+                                    <span class="material-symbols-outlined">logout</span>
+                                    <span>로그아웃</span>
+                                </a>
+                            </div>
                         </div>
                     </li>
                 </ul>

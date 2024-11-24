@@ -168,34 +168,58 @@ tbody tr:nth-child(8) td:first-child {
 
 /* 로그인 상태 표시 영역 스타일 */
 #userInfo {
+    position: relative;
     display: none;
-    align-items: center;
-    color: white;
 }
 
-#welcomeMessage {
-    margin-right: 10px;
-    font-family: "Jua", sans-serif;
+.userDropdown {
+    color: white;
+    text-decoration: none;
+    padding: 14px 16px;
+    display: block;
 }
 
-#logoutBtn {
-    background: none;
-    border: none;
+.userDropdown:hover {
+    background-color: rgb(214, 167, 134);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: chocolate;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 0;
+}
+
+#userInfo:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content #welcomeMessage {
     color: white;
-    cursor: pointer;
-    padding: 0;
+    padding: 12px 16px;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content #logoutBtn {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
     display: flex;
     align-items: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-#logoutBtn .material-symbols-outlined {
-    font-size: 24px;  /* 아이콘 크기 조절 */
-    color: white;     /* 아이콘 색상 */
-    padding: 14px 16px;  /* 패딩 추가 */
+.dropdown-content #logoutBtn:hover {
+    background-color: rgb(214, 167, 134);
 }
 
-#logoutBtn:hover .material-symbols-outlined {
-    background-color: rgb(214, 167, 134);  /* 호버 효과 */
+.dropdown-content #logoutBtn span:last-child {
+    margin-left: 8px;
 }
 
 /* 모달 스타일 */
