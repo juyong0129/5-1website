@@ -148,10 +148,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // 회원가입 폼 제출 처리
         elements.auth.registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
             const data = {
-                username: formData.get('username'),
-                password: formData.get('password')
+                username: document.getElementById('regUsername').value,
+                password: document.getElementById('regPassword').value
             };
 
             try {
@@ -175,6 +174,40 @@ document.addEventListener('DOMContentLoaded', function () {
             } catch (error) {
                 console.error('회원가입 에러:', error);
                 alert('회원가입 처리 중 오류가 발생했습니다.');
+            }
+        });
+
+        // 로그인 폼 제출 처리
+        elements.auth.loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    elements.auth.loginModal.style.display = 'none';
+                    elements.auth.loginText.style.display = 'none';
+                    elements.auth.userInfo.style.display = 'block';
+                    elements.auth.welcomeMessage.textContent = `환영합니다, ${formData.username}님!`;
+                    chatHandler.loadStoredMessages();
+                } else {
+                    alert(result.message || '로그인에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('로그인 에러:', error);
+                alert('로그인 처리 중 오류가 발생했습니다.');
             }
         });
     };
