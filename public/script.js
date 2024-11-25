@@ -1,245 +1,190 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 설문조사 관련 요소
-    const form = document.getElementById('siteForm');
-    const output = document.getElementById('output');
-    
-    // 실시간 채팅 관련 요소
-    const msgForm = document.getElementById('msg');
-    const msgInput = document.getElementById('msgBox');
-    const msgText = document.getElementById('msgText');
+    // DOM 요소 초기화
+    const elements = {
+        chat: {
+            form: document.getElementById('msg'),
+            input: document.getElementById('msgBox'),
+            messageList: document.getElementById('msgText')
+        },
+        survey: {
+            form: document.getElementById('siteForm'),
+            output: document.getElementById('output')
+        },
+        auth: {
+            loginModal: document.getElementById('loginModal'),
+            registerModal: document.getElementById('registerModal'),
+            loginText: document.getElementById('loginText'),
+            registerLink: document.getElementById('registerLink'),
+            loginForm: document.getElementById('loginForm'),
+            registerForm: document.getElementById('registerForm'),
+            userInfo: document.getElementById('userInfo'),
+            welcomeMessage: document.getElementById('welcomeMessage'),
+            logoutBtn: document.getElementById('logoutBtn')
+        }
+    };
 
-    // 교시 시간표 데이터
-    const periods = [
-        { start: "09:00", end: "09:40", period: "1교시" },
-        { start: "09:50", end: "10:30", period: "2교시" },
-        { start: "10:40", end: "11:20", period: "3교시" },
-        { start: "11:30", end: "12:10", period: "4교시" },
-        { start: "13:00", end: "13:40", period: "5교시" },
-        { start: "13:50", end: "14:30", period: "6교시" },
-        { start: "14:30", end: "15:10", period: "7교시" }
-    ];
-
-    // Socket.IO 클라이언트 초기화
+    // Socket.IO 초기화
     const socket = io();
 
-    // 설문조사 폼 제출 처리
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        
-        const question1 = document.getElementById('question1').value;
-        const question2 = document.getElementById('question2').value;
-        
-        // 서버로 데이터 전송
-        fetch('/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name: question1, url: question2 })
-        })
-        .then(response => response.text())
-        .then(data => {
-            alert(data);
-            displayStoredData();
-        });
+    // 채팅 관련 함수들
+    const chatHandler = {
+        getCurrentUser: () => {
+            const welcomeText = elements.auth.welcomeMessage.textContent;
+            return welcomeText ? welcomeText.split('환영합니다,')[1]?.split('님!')[0]?.trim() : null;
+        },
 
-        form.reset();
-    });
-
-    // 서버에서 저장된 데이터를 가져와 출력
-    function displayStoredData() {
-        fetch('/sites')
-        .then(response => response.json())
-        .then(sites => {
-            if (sites.length > 0) {
-                output.innerHTML = '<h2>친구들이 좋아하는 사이트</h2><ul>';
-                sites.forEach(site => {
-                    output.innerHTML += `<li>사이트 이름: ${site.name}, 사이트 주소: <a href="${site.url}" target="_blank">${site.url}</a> (수신된 횟수: ${site.count})</li>`;
-                });
-                output.innerHTML += '</ul>';
-            } else {
-                output.innerHTML = '<p>첫번째로 설문조사에 참여해 보세요!</p>';
-            }
-        });
-    }
-
-    // 페이지 로드 시 저장된 데이터를 출력
-    displayStoredData();
-
-    function displayStoredTalk() {
-        fetch('/messages')
-        .then(response => response.json())
-        .then(messages => {
-            const msgText = document.getElementById('msgText');
-            messages.forEach(msg => {
-                const newMsg = document.createElement('li');
-                newMsg.textContent = `${msg.username}: ${msg.text}`;
-                msgText.appendChild(newMsg);
-            });
-        })
-        .catch(error => console.error('Error fetching messages:', error));
-    }
-    
-    displayStoredTalk()
-    
-    // 현재 교시 업데이트
-    function updateCurrentPeriod() {
-        const now = new Date();
-        const currentTime = now.toTimeString().slice(0, 5);
-        const currentPeriodElement = document.getElementById('currentPeriod');
-
-        let currentPeriod = "쉬는 시간입니다!";
-        for (const period of periods) {
-            if (currentTime >= period.start && currentTime < period.end) {
-                currentPeriod = `지금은 ${period.period}입니다!`;
-                break;
-            }
-        }
-        
-        if (currentTime > "15:10") {
-            currentPeriod = "수업이 종료되었습니다!";
-        }
-
-        currentPeriodElement.textContent = `현재 시각: ${currentTime} - ${currentPeriod}`;
-    }
-
-    // 페이지 로드 시와 매 분마다 현재 교시 업데이트
-    updateCurrentPeriod();
-    setInterval(updateCurrentPeriod, 60000);
-
-    // 실시간 채팅: 메시지 전송 처리
-    msgForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const message = msgInput.value;
-        if (message.trim()) {
-            // welcomeMessage에서 사용자 이름을 가져옴는 방식 수정
-            const welcomeText = welcomeMessage.textContent;
-            const username = welcomeText.split('환영합니다,')[1]?.split('님!')[0]?.trim();
+        displayMessage: (data, currentUser) => {
+            const messageElement = document.createElement('li');
+            const messageContainer = document.createElement('div');
+            const messageInfo = document.createElement('div');
             
-            if (!username) {
-                alert('채팅을 하려면 먼저 로그인해주세요!');
-                
-                // 로그인 버튼에 애니메이션 효과 추가
-                const loginText = document.getElementById('loginText');
-                loginText.classList.add('highlight-animation');
-                
-                // 애니메이션이 끝나면 클래스 제거
-                setTimeout(() => {
-                    loginText.classList.remove('highlight-animation');
-                }, 2000);
-                
-                return;
+            const timeString = new Date().toLocaleTimeString('ko-KR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            messageInfo.textContent = `${data.username} • ${timeString}`;
+            messageContainer.className = 'chat-message';
+            
+            if (currentUser && data.username === currentUser) {
+                messageContainer.className += ' message-right';
+            } else {
+                messageContainer.className += ' message-left';
             }
-            socket.emit('chatMessage', { username, message });
-            msgInput.value = '';
+
+            messageContainer.appendChild(messageInfo);
+            messageContainer.appendChild(document.createTextNode(data.message));
+            messageElement.appendChild(messageContainer);
+            elements.chat.messageList.appendChild(messageElement);
+            
+            elements.chat.messageList.scrollTop = elements.chat.messageList.scrollHeight;
+        },
+
+        loadStoredMessages: async () => {
+            try {
+                const response = await fetch('/messages');
+                const messages = await response.json();
+                elements.chat.messageList.innerHTML = '';
+                const currentUser = chatHandler.getCurrentUser();
+                
+                messages.forEach(msg => {
+                    chatHandler.displayMessage({
+                        username: msg.username,
+                        message: msg.text
+                    }, currentUser);
+                });
+            } catch (error) {
+                console.error('메시지 로딩 실패:', error);
+            }
         }
-    });
+    };
 
-    // 서버에서 메시지 수신 처리
-    socket.on('chatMessage', function (data) {
-        const newMsg = document.createElement('li');
-        newMsg.textContent = `${data.username}: ${data.message}`; // 사용자 이름과 메시지를 함께 표시
-        msgText.appendChild(newMsg);
-    });
+    // 이벤트 리스너 설정
+    const setupEventListeners = () => {
+        // 채팅 메시지 전송
+        elements.chat.form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = elements.chat.input.value.trim();
+            const username = chatHandler.getCurrentUser();
 
-    const loginModal = document.getElementById('loginModal');
-    const registerModal = document.getElementById('registerModal');
-    const loginText = document.getElementById('loginText');
-    const registerLink = document.getElementById('registerLink');
-    const closeBtns = document.getElementsByClassName('close');
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const userInfo = document.getElementById('userInfo');
-    const welcomeMessage = document.getElementById('welcomeMessage');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    // 모달 열기
-    loginText.onclick = () => {
-        loginModal.style.display = "block";
-    }
-
-    registerLink.onclick = () => {
-        loginModal.style.display = "none";
-        registerModal.style.display = "block";
-    }
-
-    // 모달 닫기
-    Array.from(closeBtns).forEach(btn => {
-        btn.onclick = function() {
-            loginModal.style.display = "none";
-            registerModal.style.display = "none";
-        }
-    });
-
-    // 모달 외부 클릭시 닫기
-    window.onclick = (event) => {
-        if (event.target == loginModal) {
-            loginModal.style.display = "none";
-        }
-        if (event.target == registerModal) {
-            registerModal.style.display = "none";
-        }
-    }
-
-    // 로그인 처리
-    loginForm.onsubmit = async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
+            if (message && username) {
+                socket.emit('chatMessage', { username, message });
+                elements.chat.input.value = '';
+            } else if (!username) {
+                alert('채팅을 하려면 먼저 로그인해주세요!');
+                elements.auth.loginText.classList.add('highlight-animation');
+                setTimeout(() => {
+                    elements.auth.loginText.classList.remove('highlight-animation');
+                }, 2000);
+            }
         });
-        
-        const data = await response.json();
-        if (data.success) {
-            console.log('Someone login! 👋'); // 로그인 성공 시
-            loginModal.style.display = "none";
-            loginText.style.display = "none";
-            userInfo.style.display = "block";
-            welcomeMessage.textContent = `환영합니다, ${username}님!`;
-            loginForm.reset();
-        } else {
-            console.log('Login failed! ❌'); // 로그인 실패 시
-            alert(data.message || '로그인 실패');
-        }
-    }
 
-    // 회원가입 처리
-    registerForm.onsubmit = async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('regUsername').value;
-        const password = document.getElementById('regPassword').value;
-        
-        const response = await fetch('/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
+        // 로그아웃 처리
+        elements.auth.logoutBtn.onclick = async () => {
+            const response = await fetch('/logout', { method: 'POST' });
+            if (response.ok) {
+                elements.auth.loginText.style.display = 'block';
+                elements.auth.userInfo.style.display = 'none';
+                elements.auth.welcomeMessage.textContent = '';
+                elements.chat.messageList.innerHTML = '';
+                chatHandler.loadStoredMessages();
+            }
+        };
+
+        // 소켓 메시지 수신
+        socket.on('chatMessage', (data) => {
+            chatHandler.displayMessage(data, chatHandler.getCurrentUser());
         });
-        
-        const data = await response.json();
-        if (data.success) {
-            alert('회원가입 성공!');
-            registerModal.style.display = "none";
-            loginModal.style.display = "block";
-            registerForm.reset();
-        } else {
-            alert(data.message || '회원가입 실패');
-        }
-    }
 
-    // 로그아웃 처리
-    logoutBtn.onclick = async () => {
-        const response = await fetch('/logout', { method: 'POST' });
-        const data = await response.json();
-        
-        if (data.success) {
-            loginText.style.display = "block";
-            userInfo.style.display = "none";
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-        }
-    }
+        // 로그인 모달 이벤트
+        elements.auth.loginText.addEventListener('click', () => {
+            elements.auth.loginModal.style.display = 'block';
+        });
+
+        // 회원가입 링크 클릭 이벤트
+        elements.auth.registerLink.addEventListener('click', () => {
+            elements.auth.loginModal.style.display = 'none';
+            elements.auth.registerModal.style.display = 'block';
+        });
+
+        // 모달 닫기 버튼 이벤트
+        document.querySelectorAll('.close').forEach(closeBtn => {
+            closeBtn.addEventListener('click', () => {
+                elements.auth.loginModal.style.display = 'none';
+                elements.auth.registerModal.style.display = 'none';
+            });
+        });
+
+        // 모달 외부 클릭시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === elements.auth.loginModal) {
+                elements.auth.loginModal.style.display = 'none';
+            }
+            if (e.target === elements.auth.registerModal) {
+                elements.auth.registerModal.style.display = 'none';
+            }
+        });
+
+        // 회원가입 폼 제출 처리
+        elements.auth.registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                username: formData.get('username'),
+                password: formData.get('password')
+            };
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('회원가입이 완료되었습니다!');
+                    elements.auth.registerModal.style.display = 'none';
+                    elements.auth.loginModal.style.display = 'block';
+                } else {
+                    alert(result.message || '회원가입에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('회원가입 에러:', error);
+                alert('회원가입 처리 중 오류가 발생했습니다.');
+            }
+        });
+    };
+
+    // 초기화 함수
+    const initialize = () => {
+        setupEventListeners();
+        chatHandler.loadStoredMessages();
+    };
+
+    // 애플리케이션 시작
+    initialize();
 });

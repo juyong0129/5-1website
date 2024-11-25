@@ -123,14 +123,34 @@ io.on('connection', (socket) => {
 app.post('/register', async (req, res) => {
     try {
         const { username, password } = req.body;
+        
+        // 사용자 이름 중복 검사
+        const existingUser = await pool.query(
+            'SELECT * FROM users WHERE username = $1',
+            [username]
+        );
+        
+        if (existingUser.rows.length > 0) {
+            return res.status(400).json({ 
+                success: false, 
+                message: '이미 존재하는 사용자 이름입니다.' 
+            });
+        }
+
+        // 비밀번호 해시화 및 새 사용자 등록
         const hashedPassword = await bcrypt.hash(password, 10);
         await pool.query(
             'INSERT INTO users (username, password) VALUES ($1, $2)',
             [username, hashedPassword]
         );
+        
         res.json({ success: true });
     } catch (err) {
-        res.status(500).json({ success: false, message: '회원가입 실패' });
+        console.error('회원가입 에러:', err);
+        res.status(500).json({ 
+            success: false, 
+            message: '회원가입 처리 중 오류가 발생했습니다.' 
+        });
     }
 });
 
