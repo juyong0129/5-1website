@@ -109,9 +109,15 @@ io.on('connection', (socket) => {
   console.log('A user connected');
 
   socket.on('chatMessage', async (data) => {
-    console.log(`Message received from ${data.username}: ${data.message}`);
-    await saveMessages(data.username, data.message); // 사용자 이름과 메시지를 저장
-    io.emit('chatMessage', data); // 모든 클라이언트에 사용자 이름과 메시지 전송
+    const session = socket.request.session;
+    if (session && session.user) {
+      console.log(`Message received from ${data.username}: ${data.message}`);
+      await saveMessages(data.username, data.message); // 사용자 이름과 메시지를 저장
+      io.emit('chatMessage', data); // 모든 클라이언트에 사용자 이름과 메시지 전송
+    } else {
+      console.log('Unauthorized user attempted to send a message.');
+      socket.emit('chatError', 'You must be logged in to send messages.');
+    }
   });
 
   socket.on('disconnect', () => {
