@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
             userInfo: document.getElementById('userInfo'),
             welcomeMessage: document.getElementById('welcomeMessage'),
             logoutBtn: document.getElementById('logoutBtn')
+        },
+        timetable: {
+            currentPeriod: document.getElementById('currentPeriod')
         }
     };
 
@@ -75,6 +78,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             } catch (error) {
                 console.error('메시지 로딩 실패:', error);
+            }
+        }
+    };
+
+    // 시간표 관련 함수들
+    const timetableHandler = {
+        getCurrentPeriod: () => {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const time = hour * 60 + minute;
+
+            if (time >= 9 * 60 && time < 9 * 60 + 40) return 1;
+            if (time >= 9 * 60 + 50 && time < 10 * 60 + 30) return 2;
+            if (time >= 10 * 60 + 40 && time < 11 * 60 + 20) return 3;
+            if (time >= 11 * 60 + 30 && time < 12 * 60 + 10) return 4;
+            if (time >= 13 * 60 && time < 13 * 60 + 40) return 5;
+            if (time >= 13 * 60 + 50 && time < 14 * 60 + 30) return 6;
+            if (time >= 14 * 60 + 30 && time < 15 * 60 + 10) return 7;
+            return 0;
+        },
+
+        updateCurrentPeriod: () => {
+            const period = timetableHandler.getCurrentPeriod();
+            if (period === 0) {
+                elements.timetable.currentPeriod.textContent = '현재는 수업 시간이 아닙니다.';
+            } else {
+                elements.timetable.currentPeriod.textContent = `현재 ${period}교시 진행중`;
             }
         }
     };
@@ -224,6 +255,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const initialize = () => {
         setupEventListeners();
         chatHandler.loadStoredMessages();
+        timetableHandler.updateCurrentPeriod();
+        
+        // 1분마다 현재 교시 업데이트
+        setInterval(timetableHandler.updateCurrentPeriod, 60000);
     };
 
     // 애플리케이션 시작

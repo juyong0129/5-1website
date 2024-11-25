@@ -65,13 +65,23 @@ async function saveSites(name, url) {
 
 // messages 테이블에 메시지 삽입 함수 수정
 async function saveMessages(username, text) {
-    await pool.query('INSERT INTO messages (username, text) VALUES ($1, $2)', [username, text]);
-    console.log('Message saved to database:', username, text);
+    try {
+        await pool.query('INSERT INTO messages (username, text) VALUES ($1, $2)', [username, text]);
+        console.log('메시지 저장 성공:', username, text);
+    } catch (err) {
+        console.error('메시지 저장 실패:', err);
+    }
 }
 
 async function getMessages() {
-  const res = await pool.query('SELECT * FROM messages ORDER BY timestamp ASC');
-  return res.rows; // 저장된 메시지 리스트 반환
+    try {
+        const res = await pool.query('SELECT * FROM messages ORDER BY timestamp ASC');
+        console.log('메시지 불러오기 성공:', res.rows.length, '개의 메시지');
+        return res.rows;
+    } catch (err) {
+        console.error('메시지 불러오기 실패:', err);
+        return [];
+    }
 }
 
 
