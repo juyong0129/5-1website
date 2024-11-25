@@ -253,6 +253,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     elements.auth.loginText.style.display = 'none';
                     elements.auth.userInfo.style.display = 'block';
                     elements.auth.welcomeMessage.textContent = `환영합니다, ${formData.username}님!`;
+                    
+                    // Socket.IO 재연결
+                    socket.disconnect();
+                    socket.connect();
+                    
                     chatHandler.loadStoredMessages();
                 } else {
                     alert(result.message || '로그인에 실패했습니다.');

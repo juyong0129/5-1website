@@ -193,28 +193,39 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// 로그인 엔드포인트
+// 로그인 엔드포인트 수정
 app.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        console.log('로그인 시도:', username); // 로그 추가
+        console.log('로그인 시도:', username);
 
         const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
         
         if (result.rows.length > 0) {
             const validPassword = await bcrypt.compare(password, result.rows[0].password);
             if (validPassword) {
-                req.session.user = { username };
-                console.log('로그인 성공:', username); // 로그 추가
-                res.json({ success: true });
+                // 세션에 사용자 정보 저장
+                req.session.user = { 
+                    username: username,
+                    id: result.rows[0].id 
+                };
+                // 세션 저장이 완료된 후 응답 전송
+                req.session.save((err) => {
+                    if (err) {
+                        console.error('세션 저장 에러:', err);
+                        res.status(500).json({ success: false, message: '서버 오류' });
+                    } else {
+                        console.log('로그인 성공, 세션 저장됨:', req.session);
+                        res.json({ success: true });
+                    }
+                });
                 return;
             }
         }
-        console.log('로그인 실패:', username); // 로그 추가
         res.status(401).json({ success: false, message: '아이디 또는 비밀번호가 일치하지 않습니다.' });
     } catch (err) {
-        console.error('로그인 에러:', err); // 로그 추가
-        res.status(500).json({ success: false, message: '서버 오류가 발생했습니다.' });
+        console.error('로그인 에러:', err);
+        res.status(500).json({ success: false, message: '서버 오류' });
     }
 });
 
