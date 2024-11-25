@@ -164,19 +164,24 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
+        console.log('로그인 시도:', username); // 로그 추가
+
         const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
         
         if (result.rows.length > 0) {
             const validPassword = await bcrypt.compare(password, result.rows[0].password);
             if (validPassword) {
                 req.session.user = { username };
+                console.log('로그인 성공:', username); // 로그 추가
                 res.json({ success: true });
                 return;
             }
         }
-        res.status(401).json({ success: false, message: '로그인 실패' });
+        console.log('로그인 실패:', username); // 로그 추가
+        res.status(401).json({ success: false, message: '아이디 또는 비밀번호가 일치하지 않습니다.' });
     } catch (err) {
-        res.status(500).json({ success: false, message: '서버 오류' });
+        console.error('로그인 에러:', err); // 로그 추가
+        res.status(500).json({ success: false, message: '서버 오류가 발생했습니다.' });
     }
 });
 
