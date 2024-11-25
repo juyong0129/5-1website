@@ -115,24 +115,47 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-io.on('connection', (socket) => {
-  console.log('A user connected');
-
-  socket.on('chatMessage', async (data) => {
-    const session = socket.request.session;
-    if (session && session.user) {
-      console.log(`Message received from ${data.username}: ${data.message}`);
-      await saveMessages(data.username, data.message); // 사용자 이름과 메시지를 저장
-      io.emit('chatMessage', data); // 모든 클라이언트에 사용자 이름과 메시지 전송
-    } else {
-      console.log('Unauthorized user attempted to send a message.');
-      socket.emit('chatError', 'You must be logged in to send messages.');
+// Socket.IO와 세션 연동
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+io.use(wrap(session({
+    store: new pgSession({
+        pool: pool,
+        tableName: 'session'
+    }),
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60 * 1000
     }
-  });
+})));
 
-  socket.on('disconnect', () => {
-    console.log('A user disconnected');
-  });
+// Socket.IO 연결 처리 수정
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    socket.on('chatMessage', async (data) => {
+        // 세션에서 사용자 정보 확인
+        const session = socket.request.session;
+        console.log('Session:', session); // 세션 정보 로깅
+
+        if (session && session.user) {
+            console.log(`Message received from ${data.username}: ${data.message}`);
+            await saveMessages(data.username, data.message);
+            io.emit('chatMessage', data);
+        } else {
+            console.log('Unauthorized user attempted to send a message.');
+            socket.emit('chatError', { 
+                message: 'You must be logged in to send messages.',
+                type: 'error'
+            });
+        }
+    });
+
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
+    });
 });
 
 // 회원가입 엔드포인트

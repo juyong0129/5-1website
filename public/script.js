@@ -113,20 +113,33 @@ document.addEventListener('DOMContentLoaded', function () {
     // 이벤트 리스너 설정
     const setupEventListeners = () => {
         // 채팅 메시지 전송
-        elements.chat.form.addEventListener('submit', (e) => {
+        elements.chat.form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const message = elements.chat.input.value.trim();
-            const username = chatHandler.getCurrentUser();
-
-            if (message && username) {
-                socket.emit('chatMessage', { username, message });
-                elements.chat.input.value = '';
-            } else if (!username) {
+            const currentUser = chatHandler.getCurrentUser();
+            
+            if (!currentUser) {
                 alert('채팅을 하려면 먼저 로그인해주세요!');
-                elements.auth.loginText.classList.add('highlight-animation');
-                setTimeout(() => {
-                    elements.auth.loginText.classList.remove('highlight-animation');
-                }, 2000);
+                elements.auth.loginModal.style.display = 'block';
+                return;
+            }
+
+            const message = elements.chat.input.value.trim();
+            if (message) {
+                const messageData = {
+                    username: currentUser,
+                    message: message
+                };
+
+                socket.emit('chatMessage', messageData);
+                elements.chat.input.value = '';
+            }
+        });
+
+        // 채팅 에러 처리
+        socket.on('chatError', (error) => {
+            if (error.type === 'error') {
+                alert(error.message);
+                elements.auth.loginModal.style.display = 'block';
             }
         });
 
