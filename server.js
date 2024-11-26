@@ -18,8 +18,8 @@ const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
 });
 
-// 세션 미들웨어 설정
-app.use(session({
+// 세션 미들웨어 설정을 상수로 저장
+const sessionMiddleware = session({
     store: new pgSession({
         pool: pool,
         tableName: 'session'
@@ -31,7 +31,10 @@ app.use(session({
         secure: process.env.NODE_ENV === 'production',
         maxAge: 30 * 24 * 60 * 60 * 1000
     }
-}));
+});
+
+app.use(sessionMiddleware);
+io.engine.use(sessionMiddleware);
 
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -115,39 +118,23 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Socket.IO와 세션 연동
-const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
-io.use(wrap(session({
-    store: new pgSession({
-        pool: pool,
-        tableName: 'session'
-    }),
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 30 * 24 * 60 * 60 * 1000
-    }
-})));
-
-// Socket.IO 연결 처리 수정
+// Socket.IO 연결 처리
 io.on('connection', (socket) => {
     console.log('A user connected');
 
     socket.on('chatMessage', async (data) => {
         // 세션에서 사용자 정보 확인
         const session = socket.request.session;
-        console.log('Session:', session); // 세션 정보 로깅
+        console.log('Session on chat:', session); // 디버깅용 로그
 
-        if (session && session.user) {
+        if (session && session.user && session.user.username) {
             console.log(`Message received from ${data.username}: ${data.message}`);
             await saveMessages(data.username, data.message);
             io.emit('chatMessage', data);
         } else {
-            console.log('Unauthorized user attempted to send a message.');
+            console.log('Unauthorized user attempted to send a message. Session:', session);
             socket.emit('chatError', { 
-                message: 'You must be logged in to send messages.',
+                message: '채팅을 하려면 먼저 로그인해주세요!',
                 type: 'error'
             });
         }

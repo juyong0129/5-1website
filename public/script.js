@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
             elements.auth.loginModal.style.display = 'block';
         });
 
-        // 회원가입 링크 클릭 이벤트
+        // 회원가입 ���크 클릭 이벤트
         elements.auth.registerLink.addEventListener('click', () => {
             elements.auth.loginModal.style.display = 'none';
             elements.auth.registerModal.style.display = 'block';
@@ -239,7 +239,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(formData),
+                    credentials: 'include'
                 });
 
                 if (!response.ok) {
