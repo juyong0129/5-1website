@@ -125,14 +125,14 @@ io.on('connection', (socket) => {
     socket.on('chatMessage', async (data) => {
         // 세션에서 사용자 정보 확인
         const session = socket.request.session;
-        console.log('Session on chat:', session); // 디버깅용 로그
+        const username = data.username; // 클라이언트에서 전송된 username 사용
 
-        if (session && session.user && session.user.username) {
-            console.log(`Message received from ${data.username}: ${data.message}`);
-            await saveMessages(data.username, data.message);
+        if (username) {
+            console.log(`Message received from ${username}: ${data.message}`);
+            await saveMessages(username, data.message);
             io.emit('chatMessage', data);
         } else {
-            console.log('Unauthorized user attempted to send a message. Session:', session);
+            console.log('Unauthorized user attempted to send a message');
             socket.emit('chatError', { 
                 message: '채팅을 하려면 먼저 로그인해주세요!',
                 type: 'error'
@@ -145,10 +145,10 @@ io.on('connection', (socket) => {
     });
 });
 
-// 회원가입 엔드포인트
+// 회원가입 엔드포인트 수정
 app.post('/register', async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, teacherCode } = req.body;
         
         // 사용자 이름 중복 검사
         const existingUser = await pool.query(
@@ -157,26 +157,38 @@ app.post('/register', async (req, res) => {
         );
         
         if (existingUser.rows.length > 0) {
-            return res.status(400).json({ 
-                success: false, 
-                message: '이미 존재하는 사용자 이름입니다.' 
-            });
+            return res.status(400).json({ error: '이미 존재하는 사용자 이름입니다.' });
         }
 
-        // 비밀번호 해시화 및 새 사용자 등록
+        // 비밀번호 해시화
         const hashedPassword = await bcrypt.hash(password, 10);
-        await pool.query(
-            'INSERT INTO users (username, password) VALUES ($1, $2)',
-            [username, hashedPassword]
-        );
         
-        res.json({ success: true });
-    } catch (err) {
-        console.error('회원가입 에러:', err);
-        res.status(500).json({ 
-            success: false, 
-            message: '회원가입 처리 중 오류가 발생했습니다.' 
+        // 선생님 코드 확인 (예: 특정 코드를 알고 있는 경우에만 선생님 계정 생성 가능)
+        const isTeacher = teacherCode === process.env.TEACHER_SECRET_CODE;
+        
+        // 사용자 등록
+        const result = await pool.query(
+            'INSERT INTO users (username, password, is_teacher) VALUES ($1, $2, $3) RETURNING *',
+            [username, hashedPassword, isTeacher]
+        );
+
+        // 세션에 사용자 정보 저장
+        req.session.user = {
+            id: result.rows[0].id,
+            username: result.rows[0].username,
+            isTeacher: result.rows[0].is_teacher
+        };
+        
+        res.json({ 
+            message: '회원가입 성공',
+            user: {
+                username: result.rows[0].username,
+                isTeacher: result.rows[0].is_teacher
+            }
         });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: '서버 오류가 발생했습니다.' });
     }
 });
 

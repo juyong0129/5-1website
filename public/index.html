@@ -190,6 +190,37 @@
                             <button type="submit" id="msgBtn">send</button>
                         </form>
                     </section>
+                    <section id="study-helper">
+                        <h1>실시간 학습 도우미</h1>
+                        
+                        <div class="post-buttons">
+                            <button id="newQuestionBtn" class="post-btn">질문하기</button>
+                            <button id="newNoticeBtn" class="post-btn teacher-only">공지작성</button>
+                        </div>
+
+                        <div class="posts-container">
+                            <div class="posts-filter">
+                                <button class="filter-btn active" data-filter="all">전체</button>
+                                <button class="filter-btn" data-filter="question">질문</button>
+                                <button class="filter-btn" data-filter="notice">공지</button>
+                            </div>
+                            
+                            <div id="postsList"></div>
+                        </div>
+
+                        <!-- 게시물 작성 모달 -->
+                        <div id="postModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h2 id="modalTitle">질문하기</h2>
+                                <form id="postForm">
+                                    <input type="text" id="postTitle" placeholder="제목" required>
+                                    <textarea id="postContent" placeholder="내용을 입력하세요" required></textarea>
+                                    <button type="submit" id="submitPost">등록하기</button>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>
@@ -215,6 +246,12 @@
                 <form id="registerForm">
                     <input type="text" id="regUsername" placeholder="사용자 이름" required>
                     <input type="password" id="regPassword" placeholder="비밀번호" required>
+                    <div class="teacher-code-container">
+                        <label>
+                            <input type="checkbox" id="isTeacher"> 선생님으로 가입
+                        </label>
+                        <input type="password" id="teacherCode" placeholder="선생님 코드" style="display: none;">
+                    </div>
                     <button type="submit" id="registerBtn">회원가입</button>
                 </form>
             </div>

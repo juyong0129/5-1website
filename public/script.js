@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
             elements.auth.loginModal.style.display = 'block';
         });
 
-        // 회원가입 ���크 클릭 이벤트
+        // 회원가입 크 클릭 이벤트
         elements.auth.registerLink.addEventListener('click', () => {
             elements.auth.loginModal.style.display = 'none';
             elements.auth.registerModal.style.display = 'block';
@@ -189,39 +189,47 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        // 선생님 체크박스 이벤트 처리
+        document.getElementById('isTeacher').addEventListener('change', function(e) {
+            const teacherCodeInput = document.getElementById('teacherCode');
+            teacherCodeInput.style.display = e.target.checked ? 'block' : 'none';
+            teacherCodeInput.required = e.target.checked;
+        });
+
         // 회원가입 폼 제출 처리
-        elements.auth.registerForm.addEventListener('submit', async (e) => {
+        elements.auth.registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const data = {
-                username: document.getElementById('regUsername').value,
-                password: document.getElementById('regPassword').value
-            };
+            
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            const isTeacher = document.getElementById('isTeacher').checked;
+            const teacherCode = isTeacher ? document.getElementById('teacherCode').value : null;
 
             try {
                 const response = await fetch('/register', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({
+                        username,
+                        password,
+                        teacherCode
+                    })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-
-                if (result.success) {
-                    alert('회원가입이 완료되었습니다!');
-                    elements.auth.registerModal.style.display = 'none';
-                    elements.auth.loginModal.style.display = 'block';
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // 로그인 성공 처리
+                    updateUIForLoggedInUser(data.user);
+                    closeModal(elements.auth.registerModal);
                 } else {
-                    alert(result.message || '회원가입에 실패했습니다.');
+                    alert(data.error);
                 }
-            } catch (error) {
-                console.error('회원가입 에러:', error);
-                alert('회원가입 처리 중 오류가 발생했습니다.');
+            } catch (err) {
+                console.error('회원가입 오류:', err);
+                alert('회원가입 중 오류가 발생했습니다.');
             }
         });
 
