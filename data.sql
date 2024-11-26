@@ -44,10 +44,15 @@ CREATE TABLE posts (
     is_teacher BOOLEAN DEFAULT FALSE
 );
 
+-- comments 테이블 수정
+DROP TABLE IF EXISTS comments CASCADE;
 CREATE TABLE comments (
     id SERIAL PRIMARY KEY,
     post_id INTEGER REFERENCES posts(id),
     content TEXT NOT NULL,
     author VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_accepted BOOLEAN DEFAULT FALSE,
+    accepted_by VARCHAR(100),
+    accepted_by_teacher BOOLEAN DEFAULT FALSE
 );
