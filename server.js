@@ -199,39 +199,54 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// 로그인 엔드포인트 수정
+// 로그인 엔드포인트
 app.post('/login', async (req, res) => {
+    console.log('로그인 시도:', req.body.username);
+    
     try {
         const { username, password } = req.body;
-        console.log('로그인 시도:', username);
-
-        const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
         
-        if (result.rows.length > 0) {
-            const validPassword = await bcrypt.compare(password, result.rows[0].password);
-            if (validPassword) {
-                // 세션에 사용자 정보 저장
-                req.session.user = { 
-                    username: username,
-                    id: result.rows[0].id 
-                };
-                // 세션 저장이 완료된 후 응답 전송
-                req.session.save((err) => {
-                    if (err) {
-                        console.error('세션 저장 에러:', err);
-                        res.status(500).json({ success: false, message: '서버 오류' });
-                    } else {
-                        console.log('로그인 성공, 세션 저장됨:', req.session);
-                        res.json({ success: true });
-                    }
-                });
-                return;
-            }
+        // 사용자 조회
+        const result = await pool.query(
+            'SELECT * FROM users WHERE username = $1',
+            [username]
+        );
+
+        if (result.rows.length === 0) {
+            return res.json({ success: false, message: '사용자를 찾을 수 없습니다.' });
         }
-        res.status(401).json({ success: false, message: '아이디 또는 비밀번호가 일치하지 않습니다.' });
+
+        const user = result.rows[0];
+        const validPassword = await bcrypt.compare(password, user.password);
+
+        if (!validPassword) {
+            return res.json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
+        }
+
+        // 세션에 사용자 정보 저장
+        req.session.user = {
+            id: user.id,
+            username: user.username,
+            isTeacher: user.is_teacher
+        };
+
+        console.log('로그인 성공, 세션 저장됨:', req.session);
+
+        // 클라이언트에 성공 응답 보내기
+        res.json({
+            success: true,
+            user: {
+                username: user.username,
+                isTeacher: user.is_teacher
+            }
+        });
+
     } catch (err) {
-        console.error('로그인 에러:', err);
-        res.status(500).json({ success: false, message: '서버 오류' });
+        console.error('로그인 오류:', err);
+        res.status(500).json({ 
+            success: false, 
+            message: '서버 오류가 발생했습니다.' 
+        });
     }
 });
 
