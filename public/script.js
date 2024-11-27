@@ -362,11 +362,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 헬퍼 함수들
         function checkLogin() {
-            return !!document.querySelector('#userInfo').dataset.username;
+            const userInfo = elements.auth.userInfo;
+            return userInfo.style.display === 'block' && userInfo.dataset.username;
         }
 
         function isTeacher() {
-            return document.querySelector('#userInfo').dataset.isTeacher === 'true';
+            const userInfo = elements.auth.userInfo;
+            return userInfo.dataset.isTeacher === 'true';
         }
 
         function openPostModal(type) {
