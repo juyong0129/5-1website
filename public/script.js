@@ -37,6 +37,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // Socket.IO 초기화
     const socket = io();
 
+    // updateUIForLoggedInUser 함수를 elements 객체가 있는 스코프로 이동
+    function updateUIForLoggedInUser(user) {
+        elements.auth.loginText.style.display = 'none';
+        elements.auth.userInfo.style.display = 'block';
+        elements.auth.welcomeMessage.textContent = `환영합니다, ${user.username}님!`;
+        elements.auth.userInfo.dataset.username = user.username;
+        elements.auth.userInfo.dataset.isTeacher = user.isTeacher;
+    }
+
     // 채팅 관련 함수들
     const chatHandler = {
         getCurrentUser: () => {
@@ -514,12 +523,3 @@ document.addEventListener('DOMContentLoaded', function () {
     // 애플리케이션 시작
     initialize();
 });
-
-// updateUIForLoggedInUser 함수 추가
-function updateUIForLoggedInUser(user) {
-    elements.auth.loginText.style.display = 'none';
-    elements.auth.userInfo.style.display = 'block';
-    elements.auth.welcomeMessage.textContent = `환영합니다, ${user.username}님!`;
-    elements.auth.userInfo.dataset.username = user.username;
-    elements.auth.userInfo.dataset.isTeacher = user.isTeacher;
-}
