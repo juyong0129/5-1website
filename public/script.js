@@ -128,6 +128,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    // 헬퍼 함수들을 전역 스코프로 이동
+    const checkLogin = () => {
+        const userInfo = elements.auth.userInfo;
+        return userInfo.style.display === 'block' && userInfo.dataset.username;
+    };
+
+    const isTeacher = () => {
+        const userInfo = elements.auth.userInfo;
+        return userInfo.dataset.isTeacher === 'true';
+    };
+
     // 이벤트 리스너 설정
     const setupEventListeners = () => {
         // 채팅 메시지 전송
@@ -305,6 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
         elements.studyHelper.newQuestionBtn.addEventListener('click', () => {
             if (!checkLogin()) {
                 alert('로그인이 필요합니다.');
+                elements.auth.loginModal.style.display = 'block';
                 return;
             }
             openPostModal('question');
@@ -313,6 +325,7 @@ document.addEventListener('DOMContentLoaded', function () {
         elements.studyHelper.newNoticeBtn.addEventListener('click', () => {
             if (!checkLogin()) {
                 alert('로그인이 필요합니다.');
+                elements.auth.loginModal.style.display = 'block';
                 return;
             }
             if (!isTeacher()) {
@@ -362,16 +375,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // 헬퍼 함수들
-        function checkLogin() {
-            const userInfo = elements.auth.userInfo;
-            return userInfo.style.display === 'block' && userInfo.dataset.username;
-        }
-
-        function isTeacher() {
-            const userInfo = elements.auth.userInfo;
-            return userInfo.dataset.isTeacher === 'true';
-        }
-
         function openPostModal(type) {
             elements.studyHelper.postModal.dataset.postType = type;
             elements.studyHelper.postModal.style.display = 'block';
