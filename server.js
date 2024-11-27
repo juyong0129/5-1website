@@ -213,14 +213,20 @@ app.post('/login', async (req, res) => {
         );
 
         if (result.rows.length === 0) {
-            return res.json({ success: false, message: '사용자를 찾을 수 없습니다.' });
+            return res.status(400).json({ 
+                success: false, 
+                message: '사용자를 찾을 수 없습니다.' 
+            });
         }
 
         const user = result.rows[0];
         const validPassword = await bcrypt.compare(password, user.password);
 
         if (!validPassword) {
-            return res.json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
+            return res.status(400).json({ 
+                success: false, 
+                message: '비밀번호가 일치하지 않습니다.' 
+            });
         }
 
         // 세션에 사용자 정보 저장
@@ -230,10 +236,17 @@ app.post('/login', async (req, res) => {
             isTeacher: user.is_teacher
         };
 
+        await new Promise((resolve, reject) => {
+            req.session.save(err => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+
         console.log('로그인 성공, 세션 저장됨:', req.session);
 
         // 클라이언트에 성공 응답 보내기
-        res.json({
+        res.status(200).json({
             success: true,
             user: {
                 username: user.username,
