@@ -286,7 +286,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     socket.disconnect();
                     socket.connect();
                     
+                    // 채팅 메시지 로드
                     chatHandler.loadStoredMessages();
+                    
+                    // 게시물 새로고침
+                    loadPosts();
                 } else {
                     alert(result.message || '로그인에 실패했습니다.');
                 }
