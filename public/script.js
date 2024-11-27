@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const messageContainer = document.createElement('div');
             const messageInfo = document.createElement('div');
             
-            const timeString = new Date().toLocaleTimeString('ko-KR', { 
+            const timeString = new Date(data.timestamp).toLocaleTimeString('ko-KR', { 
                 hour: '2-digit', 
                 minute: '2-digit' 
             });
@@ -90,7 +90,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 messages.forEach(msg => {
                     chatHandler.displayMessage({
                         username: msg.username,
-                        message: msg.text
+                        message: msg.text,
+                        timestamp: msg.timestamp
                     }, currentUser);
                 });
             } catch (error) {
