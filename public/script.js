@@ -139,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return userInfo.dataset.isTeacher === 'true';
     };
 
-    // 이벤트 리스너 설정
     const setupEventListeners = () => {
         // 채팅 메시지 전송
         elements.chat.form.addEventListener('submit', async (e) => {
@@ -194,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
             elements.auth.loginModal.style.display = 'block';
         });
 
-        // 회원가입 크 클릭 이벤트
+        // 회원가입 클릭 이벤트
         elements.auth.registerLink.addEventListener('click', () => {
             elements.auth.loginModal.style.display = 'none';
             elements.auth.registerModal.style.display = 'block';
