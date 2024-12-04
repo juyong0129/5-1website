@@ -565,3 +565,145 @@ tbody tr:nth-child(8) td:first-child {
 .comment-form button:hover {
     background-color: var(--hover-color);
 }
+
+#tongue-drum-image {
+    display: block;
+    margin: 0 auto;
+}
+
+#tongue-drum-muchine {
+    position: relative;
+    display: inline-block;
+}
+
+#tongue-1 {
+    position: absolute;
+    left: 57%;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+#tongue-2 {
+    position: absolute;
+    left: 44%;
+    top: 17%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+#tongue-3 {
+    position: absolute;
+    left: 53.7%;
+    top: 17%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+#tongue-4 {
+    position: absolute;
+    left: 54.5%;
+    top: 68%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+#tongue-5 {
+    position: absolute;
+    left: 43%;
+    top: 67%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+#tongue-6 {
+    position: absolute;
+    left: 57%;
+    top: 32%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+#tongue-7 {
+    position: absolute;
+    left: 40%;
+    top: 31.5%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+#tongue-1a {
+    position: absolute;
+    left: 48.5%;
+    top: 7%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+#tongue-5a {
+    position: absolute;
+    left: 48.7%;
+    top: 45%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+#tongue-6a {
+    position: absolute;
+    left: 48.7%;
+    top: 70%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+#tongue-7a {
+    position: absolute;
+    left: 40.5%;
+    top: 49.6%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}

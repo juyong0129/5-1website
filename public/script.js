@@ -251,8 +251,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (response.ok) {
                     // 로그인 성공 처리
                     updateUIForLoggedInUser(data.user);
-                    closeModal(elements.auth.registerModal);
+                    elements.auth.registerModal.style.display = 'none';  // 모달 닫기
+                    elements.auth.registerForm.reset();  // 폼 초기화
                     alert('회원가입이 완료되었습니다!');
+                    return;  // 성공 시 여기서 함수 종료
                 } else {
                     // 에러 메시지 표시
                     const errorMessage = document.getElementById('registerError');
@@ -313,7 +315,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 게시물 작성 버튼 이벤트
         elements.studyHelper.newQuestionBtn.addEventListener('click', () => {
-            if (!checkLogin()) {
+            const userInfo = elements.auth.userInfo;
+            if (userInfo.style.display === 'none') {
                 alert('로그인이 필요합니다.');
                 elements.auth.loginModal.style.display = 'block';
                 return;
@@ -322,7 +325,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         elements.studyHelper.newNoticeBtn.addEventListener('click', () => {
-            if (!checkLogin()) {
+            const userInfo = elements.auth.userInfo;
+            if (userInfo.style.display === 'none') {
                 alert('로그인이 필요합니다.');
                 elements.auth.loginModal.style.display = 'block';
                 return;
@@ -337,6 +341,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // 게시물 작성 폼 제출 이벤트
         elements.studyHelper.postForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const userInfo = elements.auth.userInfo;
+            if (userInfo.style.display === 'none') {
+                alert('로그인이 필요합니다.');
+                elements.auth.loginModal.style.display = 'block';
+                return;
+            }
+
             const title = document.getElementById('postTitle').value;
             const content = document.getElementById('postContent').value;
             const type = elements.studyHelper.postModal.dataset.postType;
