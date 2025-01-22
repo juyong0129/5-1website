@@ -1,0 +1,211 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Jua", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.3rem;
+    background-color: beige;
+    padding-top: 90px;
+}
+
+input {
+    font-family: "Jua", serif;
+}
+
+button {
+    font-family: "Jua", serif;
+}
+
+.photo-image {
+    max-width: 60%;
+    height: auto;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    padding: 0.1% 1%;
+    background-color: rgb(237, 153, 80);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.logo {
+    padding: 0.5rem;
+    margin-right: 3rem;
+}
+
+.logo a {
+    display: block;
+    padding: 0.8rem 1.2rem;
+}
+
+.logo img {
+    max-height: 40px;
+    vertical-align: middle;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 3rem;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: black;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.1rem;
+}
+
+.nav-menu a:hover, .logo a:hover {
+    background-color: rgb(241, 220, 152);
+    border-radius: 4px;
+}
+
+/* 네비게이션 타겟 섹션들의 스크롤 여백 설정 */
+section [id] {
+    scroll-margin-top: 50px;  /* 네비게이션 바 높이보다 약간 더 크게 설정 */
+}
+
+/* 또는 개별 섹션에 직접 적용 */
+#classroom, #padlet {
+    scroll-margin-top: 100px;
+}
+
+/* 시간표 스타일링 */
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-size: 1rem;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+/* 요일 헤더 첫 번째 셀 스타일 */
+thead th:first-child {
+    background-color: #FFD700;  /* 노란색 */
+}
+
+/* 1교시 행 첫 번째 셀 스타일 */
+tbody tr:nth-child(1) td:first-child {
+    background-color: #FFB6C1;  /* 연한 빨간색 */
+}
+
+/* 2교시 행 첫 번째 셀 스타일 */
+tbody tr:nth-child(2) td:first-child {
+    background-color: #FFA07A;  /* 연한 주황색 */
+}
+
+/* 3교시 행 첫 번째 셀 스타일 */
+tbody tr:nth-child(3) td:first-child {
+    background-color: #FFFF99;  /* 좀 더 진한 노란색 */
+}
+
+/* 4교시 행 첫 번째 셀 스타일 */
+tbody tr:nth-child(4) td:first-child {
+    background-color: #98FB98;  /* 연한 초록색 */
+}
+
+/* 점심시간 행 스타일 */
+tr.lunch td {
+    background-color: #87CEEB;  /* 연한 파란색 */
+}
+
+/* 5교시 행 첫 번째 셀 스타일 */
+tbody tr:nth-child(6) td:first-child {
+    background-color: #B0C4DE;  /* 연한 남색 */
+}
+
+/* 6교시 행 첫 번째 셀 스타일 */
+tbody tr:nth-child(7) td:first-child {
+    background-color: #DDA0DD;  /* 연한 보라색 */
+}
+
+/* 7교시 행 첫 번째 셀 스타일 */
+tbody tr:nth-child(8) td:first-child {
+    background-color: #D3D3D3;  /* 연한 회색 */
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+#padlet-frame {
+    width: 90%;
+    height: 608px;
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+#classroom-link, #padlet-link {
+    font-size: 1rem;
+}
+
+.classroom-image {
+    width: 70%;
+    height: auto;
+}
+
+.small-text {
+    font-size: 0.7rem;
+}
+
+.chat-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin: 30px 0;
+}
+
+.messages-box {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.chat-input-container {
+    display: flex;
+    gap: 10px;
+}
+
+#chat-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.chat-button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.chat-button:hover {
+    background: #45a049;
+}
