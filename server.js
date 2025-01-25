@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 const io = require('socket.io')(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: ["http://localhost:3000"],
         methods: ["GET", "POST"],
         credentials: true
     }
@@ -16,7 +16,7 @@ const io = require('socket.io')(server, {
 
 // CORS 미들웨어 추가
 app.use(cors({
-    origin: 'http://localhost:3000',  // localhost:3000 도메인 허용 (임시)(개발 환경용)
+    origin: ["http://localhost:3000"],
     methods: ['GET', 'POST'],
     credentials: true
 }));
