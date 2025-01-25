@@ -77,6 +77,20 @@ app.post('/api/websites', (req, res) => {
     }
 });
 
+// 채팅 내역 가져오기 엔드포인트 추가
+app.get('/api/chats', (req, res) => {
+    try {
+        if (fs.existsSync(chatsPath)) {
+            const data = fs.readFileSync(chatsPath, 'utf8');
+            res.json(JSON.parse(data));
+        } else {
+            res.json([]);
+        }
+    } catch (error) {
+        res.status(500).json({ error: '채팅 내역을 불러오는데 실패했습니다.' });
+    }
+});
+
 // Socket.IO 연결 처리
 io.on('connection', (socket) => {
     console.log('사용자가 연결되었습니다.');

@@ -148,11 +148,33 @@ function checkForUpdates() {
     }
 }
 
+// 채팅 메시지 초기 로드 함수 추가
+async function loadChatMessages() {
+    try {
+        const response = await fetch('/api/chats');
+        if (!response.ok) {
+            throw new Error('채팅 내역을 불러오는데 실패했습니다.');
+        }
+        const messages = await response.json();
+        const messagesBox = document.getElementById('chat-messages');
+        messages.forEach(msg => {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = msg.message;
+            messageElement.className = 'message';
+            messagesBox.appendChild(messageElement);
+        });
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+    } catch (error) {
+        console.error('채팅 내역 로딩 오류:', error);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     linkRainbow(classroomLink, Colors);
     linkRainbow(padletLink, Colors);
     linkRainbow(driveLink, Colors);
     loadWebsites();  // 초기 데이터 로드
+    loadChatMessages();  // 채팅 내역 로드 추가
 });
 
 // 채팅 기능 수정
