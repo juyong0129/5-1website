@@ -23,6 +23,7 @@ app.use(cors({
 
 // 정적 파일을 제공할 디렉토리 설정
 app.use(express.static('public'));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));  // 이미지 경로 명시적 설정
 
 // JSON 파싱을 위한 미들웨어 추가
 app.use(express.json());
