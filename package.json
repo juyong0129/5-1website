@@ -4,16 +4,17 @@
   "description": "new 5-1website made by juyong",
   "main": "server.js",
   "scripts": {
+    "init-db": "node db/init.js",
     "start": "node server.js"
   },
   "author": "juyong",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "fs": "^0.0.1-security",
-    "http": "^0.0.1-security",
     "path": "^0.12.7",
+    "pg": "^8.13.1",
     "socket.io": "^4.8.1"
   }
 }
