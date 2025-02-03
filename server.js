@@ -39,11 +39,28 @@ app.get('/api/websites', async (req, res) => {
 app.post('/api/websites', async (req, res) => {
     try {
         const { name, url } = req.body;
-        const result = await pool.query(
-            'INSERT INTO websites (name, url) VALUES ($1, $2) RETURNING *',
-            [name, url]
+        
+        // URL이 이미 존재하는지 확인
+        const existingWebsite = await pool.query(
+            'SELECT * FROM websites WHERE url = $1',
+            [url]
         );
-        res.json(result.rows[0]);
+        
+        if (existingWebsite.rows.length > 0) {
+            // 이미 존재하는 경우 수신 횟수 증가
+            const result = await pool.query(
+                'UPDATE websites SET receive_count = receive_count + 1 WHERE url = $1 RETURNING *',
+                [url]
+            );
+            res.json(result.rows[0]);
+        } else {
+            // 새로운 웹사이트 추가 (초기 수신 횟수 1로 시작)
+            const result = await pool.query(
+                'INSERT INTO websites (name, url, receive_count) VALUES ($1, $2, 1) RETURNING *',
+                [name, url]
+            );
+            res.json(result.rows[0]);
+        }
     } catch (error) {
         console.error('데이터베이스 저장 오류:', error);
         res.status(500).json({ error: '데이터 저장에 실패했습니다.' });
@@ -61,9 +78,28 @@ app.get('/api/chats', async (req, res) => {
     }
 });
 
+// 웹사이트 클릭 수 증가
+app.post('/api/websites/:id/receive', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query(
+            'UPDATE websites SET receive_count = receive_count + 1 WHERE id = $1 RETURNING *',
+            [id]
+        );
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('수신 횟수 업데이트 오류:', error);
+        res.status(500).json({ error: '수신 횟수 업데이트에 실패했습니다.' });
+    }
+});
+
+let CountOfPeople = 0;
 // Socket.IO 연결 처리
 io.on('connection', (socket) => {
     console.log('사용자가 연결되었습니다.');
+    CountOfPeople++;
+    // 접속자 수 업데이트를 모든 클라이언트에 브로드캐스트
+    io.emit('updateCount', CountOfPeople);
 
     socket.on('chat message', async (msg) => {
         try {
@@ -79,6 +115,9 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('사용자가 연결을 해제했습니다.');
+        CountOfPeople--;
+        // 접속자 수 업데이트를 모든 클라이언트에 브로드캐스트
+        io.emit('updateCount', CountOfPeople);
     });
 });
 
@@ -99,3 +138,4 @@ pool.connect()
         console.error('데이터베이스 연결 실패:', err);
         process.exit(1);
     });
+

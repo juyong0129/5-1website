@@ -8,6 +8,7 @@ const chatForm = document.getElementById('chat-form');
 const chatInput = document.getElementById('chat-input');
 const Colors = ["#FFB6C1", "#FFA07A", "#FFFF99", "#98FB98", "#87CEEB", "#B0C4DE", "#DDA0DD"];
 const socket = io();
+const countText = document.getElementById('countText');
 
 function updateTimeText() {
     now = new Date();
@@ -69,13 +70,15 @@ function linkRainbow(link, colors) {
     });
 }
 
-function addWebsite(siteName, siteUrl) {
+function addWebsite(website) {
     const li = document.createElement('li');
     const a = document.createElement('a');
-    a.href = siteUrl;
-    a.textContent = siteName;
+    a.href = website.url;
+    a.textContent = `${website.name}(수신:${website.receive_count})`;
     a.target = "_blank";
     a.rel = "noopener";
+    
+    // 클릭 이벤트 리스너 제거하고 단순 링크로만 동작하도록 수정
     li.appendChild(a);
     websiteList.appendChild(li);
 }
@@ -129,10 +132,25 @@ async function loadWebsites() {
         const websites = await response.json();
         // 기존 목록 초기화
         websiteList.innerHTML = '';
-        // 새로운 데이터로 목록 갱신
+        
+        // URL별로 수신 횟수를 합산하기 위한 Map 사용
+        const urlMap = new Map();
         websites.forEach(website => {
-            addWebsite(website.name, website.url);
+            if (urlMap.has(website.url)) {
+                // 이미 존재하는 URL이면 수신 횟수만 증가
+                const existingWebsite = urlMap.get(website.url);
+                existingWebsite.receive_count += website.receive_count;
+            } else {
+                // 새로운 URL이면 Map에 추가
+                urlMap.set(website.url, { ...website });
+            }
         });
+        
+        // 중복이 제거되고 수신 횟수가 합산된 웹사이트 목록 표시
+        urlMap.forEach(website => {
+            addWebsite(website);
+        });
+        
         // 링크에 레인보우 효과 적용
         applyRainbowToLinks();
     } catch (error) {
@@ -205,6 +223,11 @@ socket.on('connect', () => {
 
 socket.on('disconnect', () => {
     console.log('서버와 연결이 끊어졌습니다.');
+});
+
+// 접속자 수 업데이트 이벤트 리스너
+socket.on('updateCount', (count) => {
+    countText.textContent = count + '명';
 });
 
 setInterval(() => {
