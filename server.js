@@ -27,7 +27,7 @@ app.use(express.json());
 // 웹사이트 목록 가져오기
 app.get('/api/websites', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM websites ORDER BY created_at DESC');
+        const result = await pool.query('SELECT * FROM websites ORDER BY created_at ASC');
         res.json(result.rows);
     } catch (error) {
         console.error('데이터베이스 조회 오류:', error);
