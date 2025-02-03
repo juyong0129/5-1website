@@ -9,6 +9,9 @@ const chatInput = document.getElementById('chat-input');
 const Colors = ["#FFB6C1", "#FFA07A", "#FFFF99", "#98FB98", "#87CEEB", "#B0C4DE", "#DDA0DD"];
 const socket = io();
 const countText = document.getElementById('countText');
+const authSection = document.getElementById('auth');
+const authStatus = document.getElementById('auth-status');
+const loginText = document.getElementById('login-text');
 
 function updateTimeText() {
     now = new Date();
@@ -234,3 +237,112 @@ setInterval(() => {
     updateTimeText();
     checkForUpdates();
 }, 1000);
+
+// 회원가입 폼 제출 처리
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+        username: document.getElementById('register-username').value,
+        password: document.getElementById('register-password').value,
+        name: document.getElementById('register-name').value
+    };
+    
+    try {
+        const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error);
+        }
+        
+        alert('회원가입이 완료되었습니다!');
+        document.getElementById('register-form').reset();
+    } catch (error) {
+        alert(error.message || '회원가입 중 오류가 발생했습니다.');
+    }
+});
+
+function updateUIForLogin(username) {
+    // 로그인 폼 숨기기
+    authSection.classList.add('hidden');
+    
+    // 네비게이션 바 업데이트
+    loginText.innerHTML = `${username}님 <svg class="logout-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#F9DB78"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg>`;
+    
+    // href 속성 제거
+    loginText.removeAttribute('href');
+    
+    // 로그아웃 아이콘에 이벤트 리스너 추가
+    const logoutIcon = loginText.querySelector('.logout-icon');
+    logoutIcon.addEventListener('click', handleLogout);
+}
+
+async function handleLogout() {
+    try {
+        const response = await fetch('/api/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('로그아웃 실패');
+        }
+
+        // 로그인 폼 다시 보이기
+        authSection.classList.remove('hidden');
+        
+        // 네비게이션 바 초기화
+        loginText.innerHTML = '로그인 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#F9DB78"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg>';
+        
+        // href 속성 다시 추가
+        loginText.setAttribute('href', '#auth');
+        
+        // 로그인 폼 초기화
+        document.getElementById('login-form').reset();
+        document.getElementById('register-form').reset();
+        
+    } catch (error) {
+        console.error('로그아웃 오류:', error);
+        alert('로그아웃 중 오류가 발생했습니다.');
+    }
+}
+
+// 기존 로그인 폼 제출 핸들러 수정
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+        username: document.getElementById('login-username').value,
+        password: document.getElementById('login-password').value
+    };
+    
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error);
+        }
+        
+        const userData = await response.json();
+        updateUIForLogin(userData.name);
+        
+    } catch (error) {
+        alert(error.message || '로그인 중 오류가 발생했습니다.');
+    }
+});

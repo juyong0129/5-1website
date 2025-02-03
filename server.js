@@ -125,6 +125,65 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// 회원가입
+app.post('/api/register', async (req, res) => {
+    try {
+        const { username, password, name } = req.body;
+        
+        // 아이디 중복 확인
+        const existingUser = await pool.query(
+            'SELECT * FROM users WHERE username = $1',
+            [username]
+        );
+        
+        if (existingUser.rows.length > 0) {
+            return res.status(400).json({ error: '이미 존재하는 아이디입니다.' });
+        }
+        
+        // 새 사용자 등록
+        const result = await pool.query(
+            'INSERT INTO users (username, password, name) VALUES ($1, $2, $3) RETURNING *',
+            [username, password, name]
+        );
+        
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('회원가입 오류:', error);
+        res.status(500).json({ error: '회원가입에 실패했습니다.' });
+    }
+});
+
+// 로그인
+app.post('/api/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        
+        const result = await pool.query(
+            'SELECT * FROM users WHERE username = $1 AND password = $2',
+            [username, password]
+        );
+        
+        if (result.rows.length > 0) {
+            res.json(result.rows[0]);
+        } else {
+            res.status(401).json({ error: '아이디 또는 비밀번호가 잘못되었습니다.' });
+        }
+    } catch (error) {
+        console.error('로그인 오류:', error);
+        res.status(500).json({ error: '로그인에 실패했습니다.' });
+    }
+});
+
+// 로그아웃
+app.post('/api/logout', (req, res) => {
+    try {
+        res.json({ message: '로그아웃 되었습니다.' });
+    } catch (error) {
+        console.error('로그아웃 오류:', error);
+        res.status(500).json({ error: '로그아웃에 실패했습니다.' });
+    }
+});
+
 // 서버 시작 전에 데이터베이스 연결 테스트
 pool.connect()
     .then(() => {

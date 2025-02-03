@@ -25,6 +25,9 @@
                 <li><a href="#timetable">시간표🕒</a></li>
                 <li><a href="#website">웹사이트🗃️</a></li>
                 <li><a href="#chat">실시간 채팅💬</a></li>
+                <li id="auth-status" class="nav-item">
+                    <a href="#auth" id="login-text">로그인 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#F9DB78"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg></a>
+                </li>
             </ul>
         </nav>
     </header>
@@ -175,6 +178,28 @@
                 </div>
             </section>
             
+            <section id="auth" class="auth-section">
+                <div class="auth-container">
+                    <div class="login-form">
+                        <h2>로그인</h2>
+                        <form id="login-form">
+                            <input type="text" id="login-username" placeholder="아이디" required>
+                            <input type="password" id="login-password" placeholder="비밀번호" required>
+                            <button type="submit">로그인</button>
+                        </form>
+                    </div>
+
+                    <div class="register-form">
+                        <h2>회원가입</h2>
+                        <form id="register-form">
+                            <input type="text" id="register-username" placeholder="아이디" required>
+                            <input type="password" id="register-password" placeholder="비밀번호" required>
+                            <input type="text" id="register-name" placeholder="이름" required>
+                            <button type="submit">회원가입</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
         </section>
         
         <aside>
